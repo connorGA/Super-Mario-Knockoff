@@ -9,3 +9,7 @@ body {
     transform: translate(-50%, -50%);
     border: 5px solid white;
 }
+
+#playerImage, #backgroundImage, #enemyImage {     
+    display: none;                                 
+}
