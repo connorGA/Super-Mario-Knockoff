@@ -40,7 +40,7 @@ window.addEventListener('load', function(){                         //wrap whole
             this.gameHeight = gameHeight;
             this.width = 220;                                       //this.width & this.height dictate the size of the frame that holds our player sprite
             this.height = 300;
-            this.x = 0;                                             // this.x cord moves player on horizontal axis and this.y moves player on vertical axis
+            this.x = 0;                                             // this.x cord moves player on horizontal axis and this.y moves player on vertical axis. Setting to 0 starts player on furthest left edge
             this.y = this.gameHeight - this.height;                 //this makes sure our player stands at the bottom of our specified game area
             this.image = document.getElementById('playerImage');    // grabbing our player sprite sheet and bringing it into the project
             this.frameX = 0;
@@ -51,7 +51,7 @@ window.addEventListener('load', function(){                         //wrap whole
 
         }
         draw(context){                                                                            //takes context as an argument to specify which canvas we want to draw on
-            context.fillStyle = 'White';                                                          //this is so we can see rectangle for now. Makes it easier to play around with sizing and stuff
+            context.fillStyle = 'white';                                                          //this is so we can see rectangle for now. Makes it easier to play around with sizing and stuff. Set to "transperent" when you want to remove white box
             context.fillRect(this.x, this.y, this.width, this.height);                            //call built in fillRect method to create a rectangle that will represent our player
             context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height,    //built in drawImage method used to draw player image. Pass it this.image from above that we used to grab our sprite sheet. 
                 this.width, this.height, this.x, this.y, this.width, this.height);
