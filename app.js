@@ -44,7 +44,7 @@ window.addEventListener('load', function(){                         //wrap whole
             this.y = this.gameHeight - this.height;                 //this makes sure our player stands at the bottom of our specified game area
             this.image = document.getElementById('playerImage');    // grabbing our player sprite sheet and bringing it into the project
             this.frameX = 0;
-            this.frameY = 0;
+            this.frameY = 0;                                        //changing this.frameX & this.frameY allows us to navigate to differe
             this.speed = 0;
             this.vy = 0;
             this.weight = 1;
@@ -53,7 +53,7 @@ window.addEventListener('load', function(){                         //wrap whole
         draw(context){                                                                            //takes context as an argument to specify which canvas we want to draw on
             context.fillStyle = 'White';                                                          //this is so we can see rectangle for now. Makes it easier to play around with sizing and stuff
             context.fillRect(this.x, this.y, this.width, this.height);                            //call built in fillRect method to create a rectangle that will represent our player
-            context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height,    //built in drawImage method used to draw player image. Pass it this.image from above that we used to grab our sprite sheet.
+            context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height,    //built in drawImage method used to draw player image. Pass it this.image from above that we used to grab our sprite sheet. 
                 this.width, this.height, this.x, this.y, this.width, this.height);
         }
         update(input){                                                                            //this update method is so we can move player around based on our user inputs
