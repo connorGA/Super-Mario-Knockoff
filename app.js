@@ -5,6 +5,7 @@ window.addEventListener('load', function(){                         //wrap whole
     const ctx = canvas.getContext('2d');                            //ctx = "context". instance of built-in canvas 2D api that holds all drawing methods and properties we will need to animate the game
     canvas.width = 800;
     canvas.height = 720;                                            //canvas.width and canvas.height are adjusting the canvas box to the desired size
+    let enemies = [];
 
     class InputHandler {                                            //InputHandler class will apply eventListeners to keyboard events and hold array of all currently active keys
         constructor(){
@@ -109,23 +110,39 @@ window.addEventListener('load', function(){                         //wrap whole
         }
     }
 
-    class Enemy {                                                                //Enemy class will generate enemies
-        constructor(gameWidth, gameHeight){
-            this.gameWidth = gameWidth;
+    class Enemy {                                                                //Enemy class will generate enemy object
+        constructor(gameWidth, gameHeight){                                      //constructor expects gameWidth & gameHeight as arguments because enemies need to be aware of game area boundaries
+            this.gameWidth = gameWidth;                                          //convert gameWidth & gameHeight(line below) to class properties
             this.gameHeight = gameHeight;
-            this.width = 160;
-            this.height = 119;
-            this.image = document.getElementById('enemyImage');
-            this.x = 0;
-            this.y = 0;
+            this.width = 160;                                                    //adjust this.width & this.height to size frame of our enemy sprite
+            this.height = 200;
+            this.image = document.getElementById('enemyImage');                  //grabbing our enemy sprite from html by Id
+            this.x = this.gameWidth;
+            this.y = this.gameHeight - this.height;
+            this.frameX = .75;
+            this.frameY = 0;
         }
-        draw(context){
-            context.drawImage(this.image, this.x, this.y);
+        draw(context){                                                                           //draw method expects context as an argument 
+            context.drawImage(this.image, this.frameX * this.width, 0, this.width, this.height, this.x, 
+            this.y, this.width, this.height);                                                    //call built in drawImage method and pass this.image as well as dimensions to select frame on sprite sheet, just like we did in Player class 
+        }
+        update(){
+            this.x--;
         }
     }
 
-    function handleEnemies() {                                                  //function is responsible for adding, animating, and removing enemies from the game
     
+    function handleEnemies(deltaTime) {                                                  //function is responsible for adding, animating, and removing enemies from the game
+        if (enemyTimer > enemyInterval){
+            enemies.push(new Enemy(canvas.width, canvas.height));
+            enemyTimer = 0;
+        }else {
+            enemyTimer += deltaTime;
+        }
+        enemies.forEach(enemy => {
+            enemy.draw(ctx);
+            enemy.update();
+        })
     }
 
     function displayStatusText() {                                              //utility function that handles things like score and "gameover" message
@@ -136,19 +153,24 @@ window.addEventListener('load', function(){                         //wrap whole
     const input = new InputHandler();                                           //instance of InputHandler class that will run all code inside constructor, so at this point the eventListener "keydown" is applied
     const player = new Player(canvas.width, canvas.height);                     //instance of Player class. Our constuctor expects a gameWidth and gameHeight as arguments, so we will pass it the canvas.width and canvas.height we specified at the top. This keeps our player inside our canvas boundaries
     const background = new Background(canvas.width, canvas.height);             //instance of Background class. I passed it our game dimension, canvas.width & canvas.height
-    const enemy1 = new Enemy(canvas.width, canvas.height);
+                       
     
+    let lastTime = 0;
+    let enemyTimer = 0;
+    let enemyInterval = 1000;
 
-    function animate(){                                                        // will run 60 x per second updating and drawing our game over and over 
+    function animate(timeStamp){                                                        // will run 60 x per second updating and drawing our game over and over 
+        const deltaTime = timeStamp - lastTime
+        lastTime = timeStamp;
         ctx.clearRect(0,0,canvas.width, canvas.height);                        //To show only current animation frame. This built in method will delete whole canvas between each animation loop. This prevents the canvas from leaving a trail, instead showing only current frame
         background.draw(ctx);                                                  //since we are drawing everything on a single canvas element(ctx), we have to draw our background before player and enemies, so that they are visible on top of background
         background.update();                                                   //call background.update inside our animation loop so our background animation will scroll
         player.draw(ctx);                                                      // this displays player by calling our "draw" method we wrote above. It expects "context" as an argument, so we pass it our "ctx" from the top 
         player.update(input);                                                  // call our update method 
-        enemy1.draw(ctx);
-       
+        handleEnemies(deltaTime);
+
         requestAnimationFrame(animate);                                        //built in method to make everything in our animate function loop. Pass in "animate", the name of its parent function, to make endless animation loop
     }
-    animate();                                                                  //call animate function to start endless loop
+    animate(0);                                                                  //call animate function to start endless loop
 
 });
