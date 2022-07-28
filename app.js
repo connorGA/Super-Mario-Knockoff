@@ -44,68 +44,68 @@ window.addEventListener('load', function(){                         //wrap whole
             this.y = this.gameHeight - this.height;                 //this makes sure our player stands at the bottom of our specified game area
             this.image = document.getElementById('playerImage');    // grabbing our player sprite sheet and bringing it into the project
             this.frameX = 0;
-            this.frameY = 0;                                        //changing this.frameX & this.frameY allows us to navigate to differe
-            this.speed = 0;
-            this.vy = 0;
-            this.weight = 1;
+            this.frameY = 0;                                        //changing this.frameX & this.frameY allows us to navigate to different frames in our sprite sheet
+            this.speed = 0;                                         //affects player movement on x axis(horizontal); higher value = higher speed. Negative values move character backwards
+            this.vy = 0;                                            //this.vy(velocity) pertains to vertical movement aka jumping
+            this.weight = 1;                                        //need this.weight to prevent player from jumping and flying off the top of the screen. Basically functions as our gravity. Set it = to 1, because we are going to gradually add weight to this.vy so player begins to drop
 
         }
         draw(context){                                                                            //takes context as an argument to specify which canvas we want to draw on
             context.fillStyle = 'white';                                                          //this is so we can see rectangle for now. Makes it easier to play around with sizing and stuff. Set to "transperent" when you want to remove white box
             context.fillRect(this.x, this.y, this.width, this.height);                            //call built in fillRect method to create a rectangle that will represent our player
             context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height,    //built in drawImage method used to draw player image. Pass it this.image from above that we used to grab our sprite sheet. 
-                this.width, this.height, this.x, this.y, this.width, this.height);
+                this.width, this.height, this.x, this.y, this.width, this.height);                //[1] pass in this.image to insert grabbed sprite sheet from above [2 & 3 & 4 & 5]these determined the rectangle we wanted to crop out from our source spritesheet. The frameX and frameY select which frame in sprite sheet we want and the this.width & this.height place it in our canvas correctly  [6 & 7 & 8 & 9]All of these dictated where on our destination canvas our sprite would go...this.x and this.y adjusted sprite sheet linearly, placing one in box, but still including others. (8 & 9)this.width & this.height helped compress sprite sheet into our box, but mashed together
         }
-        update(input){                                                                            //this update method is so we can move player around based on our user inputs
-            if (input.keys.indexOf('ArrowRight') > -1) {
+        update(input){                                                                            //this update method is so we can move player around based on our user inputs, thus it expects "input" as an argument
+            if (input.keys.indexOf('ArrowRight') > -1) {                                          //setting input.keys to > -1 basically makes sure that the input exists in our this.keys array
                 this.speed = 5;
             } else if (input.keys.indexOf('ArrowLeft') > -1) {
                 this.speed = -5;
-            } else if (input.keys.indexOf('ArrowUp') > -1 && this.onGround()) {
+            } else if (input.keys.indexOf('ArrowUp') > -1 && this.onGround()) {                   // adding "&& this.onGround" prevents player from double jumping. Can now only jump if standing on ground. Keep in mind, velocity begins negative as it initially goes up, reducing from our set -32 until it reaches 0 at the peak, and then as it falls that value continues to count from zero up into positive integers. When we hit floor, line 80 sets vy back to 0
                 this.vy -= 32;
             } else {
-                this.speed = 0;
+                this.speed = 0;                                                                  //setting this.speed back to zero after all of these inputs tells player to stop moving once key inputs are no longer pressed, rather than having player continually moving in a direciton forever
             }
             // horizontal movement 
-            this.x += this.speed;
-            if (this.x < 0) this.x = 0;
-            else if (this.x > this.gameWidth - this.width) this.x = this.gameWidth - this.width
+            this.x += this.speed;                                                                  //we are adding this.speed to this.x at all times to control horizontal movement. When this.speed is positive, player will move right. When this.speed is negative, player will move left. > number = higher speed
+            if (this.x < 0) this.x = 0;                                                         //creating horizontal boundaries, this line doesnt allow player to move past left boundary
+            else if (this.x > this.gameWidth - this.width) this.x = this.gameWidth - this.width //line says if players horizontal coordinate is more than gameWidth minus players width(meaning right edge of player rectangle) is touching right edge of canvas area, dont allow it to move past this point
             //vertical movement
-            this.y += this.vy;
-            if (!this.onGround()){
-                this.vy += this.weight;
+            this.y += this.vy;                                                                  //adding velocity to players vertical coordinate
+            if (!this.onGround()){                                                              //if this.onGround is false, meaning player is in air, then...(see below line)
+                this.vy += this.weight;                                                         //will take velocity and start gradually adding weight as long as player is in air, thus reducing velocity and bringing back down
                 this.frameY = 0;
-                this.frameX = 1.683;
+                this.frameX = 1.683;                                                            //this.frameY and this.frameX allow me to switch to different frame in my sprite sheet when player is in air(added jumping mario frame)
             } else {
-                this.vy = 0;
+                this.vy = 0;                                                                    //if player is not in air, and is back on ground, reset our velocity to 0
                 this.frameY = 0;
                 this.frameX = 0;
             }
-            if (this.y > this.gameHeight - this.height) this.y = this.gameHeight - this.height
+            if (this.y > this.gameHeight - this.height) this.y = this.gameHeight - this.height  //was having issue of player falling through floor, so this creates a vertical boundary to prevent that
         }
         onGround(){
-            return this.y >= this.gameHeight - this.height;
+            return this.y >= this.gameHeight - this.height;                                     //utility method to check if player is in air or standing on ground. If statement evaluates to true, we know player is standing on solid ground
         }
     }
 
-    class Background {                                                                                          //Background class will handle endleslly scrolling backgrounds
-        constructor(gameWidth, gameHeight) {
-            this.gameWidth = gameWidth;
+    class Background {                                                                                          //Background class will handle endleslly scrolling background. Using a single endleslly scrolling layer 
+        constructor(gameWidth, gameHeight) {                                                                    //constructor expects gameWidth and gameHeight as arguments
+            this.gameWidth = gameWidth;                                                                         //converting gameWidth & gameHeight(line below) into class properties
             this.gameHeight = gameHeight;
-            this.image = document.getElementById('backgroundImage');
+            this.image = document.getElementById('backgroundImage');                                            //grabbing our background image off the html by its Id
             this.x = 0;
             this.y = 0;
-            this.width = 1500;
+            this.width = 1500;                                                                                  //this.width & this.height(line below) based on size of my backround image. Sizing it on the page properly
             this.height = 815;
-            this.speed = 10;
+            this.speed = 13;                                                                                    //this.speed will dictate how fast our background scrolls by
         }
-        draw(context){
-            context.drawImage(this.image, this.x, this.y, this.width, this. height);
-            context.drawImage(this.image, this.x + this.width - this.speed, this.y, this.width, this. height);
+        draw(context){                                                                                          //takes context as an argument to specify which canvas we want to draw on
+            context.drawImage(this.image, this.x, this.y, this.width, this. height);                            //call built in drawImage method
+            context.drawImage(this.image, this.x + this.width - this.speed, this.y, this.width, this. height);  //to create illusion of endleslly scrolling backgorund, need to draw same image twice. HOWEVER, on this line we add this.width to our this.x, so that our second image is position next to our first one. Then, subtracting this.speed from our this.x helps remove the small gap between where first image ends and next begins. Technically, we never see the full second image, we just see the first part as it fills the gap before the first image resets
         }
         update(){
-            this.x -= this.speed;
-            if(this.x < 0 - this.width) this.x = 0;
+            this.x -= this.speed;                                                                               //setting our horiznotal coordinate(this.x) to be minus our this.speed will make it scroll to the left
+            if(this.x < 0 - this.width) this.x = 0;                                                             //created a reset check. This means, if our background scrolls all the way off screen, set its x position back to zero
         }
     }
 
@@ -135,14 +135,14 @@ window.addEventListener('load', function(){                         //wrap whole
         
     const input = new InputHandler();                                           //instance of InputHandler class that will run all code inside constructor, so at this point the eventListener "keydown" is applied
     const player = new Player(canvas.width, canvas.height);                     //instance of Player class. Our constuctor expects a gameWidth and gameHeight as arguments, so we will pass it the canvas.width and canvas.height we specified at the top. This keeps our player inside our canvas boundaries
-    const background = new Background(canvas.width, canvas.height);
+    const background = new Background(canvas.width, canvas.height);             //instance of Background class. I passed it our game dimension, canvas.width & canvas.height
     const enemy1 = new Enemy(canvas.width, canvas.height);
     
 
     function animate(){                                                        // will run 60 x per second updating and drawing our game over and over 
         ctx.clearRect(0,0,canvas.width, canvas.height);                        //To show only current animation frame. This built in method will delete whole canvas between each animation loop. This prevents the canvas from leaving a trail, instead showing only current frame
-        background.draw(ctx);
-        background.update();
+        background.draw(ctx);                                                  //since we are drawing everything on a single canvas element(ctx), we have to draw our background before player and enemies, so that they are visible on top of background
+        background.update();                                                   //call background.update inside our animation loop so our background animation will scroll
         player.draw(ctx);                                                      // this displays player by calling our "draw" method we wrote above. It expects "context" as an argument, so we pass it our "ctx" from the top 
         player.update(input);                                                  // call our update method 
         enemy1.draw(ctx);
