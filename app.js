@@ -120,6 +120,10 @@ window.addEventListener('load', function(){                         //wrap whole
             this.x = this.gameWidth;                                             //set enemies x cord to gameWidth so that it is hidden just outside the right edge of the canvas 
             this.y = this.gameHeight - this.height;                              //vertical coord of the enemy is gameHeight minus the height of the enemy
             this.frameX = .75;                                                   //frameX and frameY for navigation within sprite sheet
+            this.maxFrame = 2.05;
+            this.fps = 20;
+            this.frameTimer = 0;
+            this.frameInterval = 1000/this.fps;
             this.frameY = 0;
             this.speed = 8;
         }
@@ -127,7 +131,14 @@ window.addEventListener('load', function(){                         //wrap whole
             context.drawImage(this.image, this.frameX * this.width, 0, this.width, this.height, this.x,     //passing it similar dimension as we did with player to situate our desired sprite in the frame
             this.y, this.width, this.height);                                                    //call built in drawImage method and pass this.image as well as dimensions to select frame on sprite sheet, just like we did in Player class 
         }
-        update(){
+        update(deltaTime){
+            if (this.frameTimer > this.frameInterval){
+                if (this.frameX >= this.maxFrame) this.frameX = .75;
+                else this.frameX = 2.05;
+                this.frameTimer = 0;
+            } else {
+                this.frameTimer += deltaTime;
+            }
             this.x -= this.speed;                                                //adding this.speed to our the enemies this.x will effect how fast the enemies move horizontally through the game
         }
     }
@@ -143,7 +154,7 @@ window.addEventListener('load', function(){                         //wrap whole
         }
         enemies.forEach(enemy => {                                                      //we want to call our draw method and update method from within our Enemy class for EACH enemy object inside our enemies array
             enemy.draw(ctx);
-            enemy.update();
+            enemy.update(deltaTime);
         })
     }
 
