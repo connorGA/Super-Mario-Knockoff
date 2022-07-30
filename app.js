@@ -3,9 +3,9 @@ console.log('hello');
 window.addEventListener('load', function(){                         //wrap whole game in this so JS waits for all assets like sprite sheets and images to load before it executes code
     const canvas = document.getElementById('canvas1');              //assign canvas a variable and grab it off our page
     const ctx = canvas.getContext('2d');                            //ctx = "context". instance of built-in canvas 2D api that holds all drawing methods and properties we will need to animate the game
-    canvas.width = 800;
+    canvas.width = 1400;
     canvas.height = 720;                                            //canvas.width and canvas.height are adjusting the canvas box to the desired size
-    let enemies = [];
+    let enemies = [];                                               //since we want multiple enemies on screen at the same time, we will create an enemies variable and set it equal to an empty array, so that later we can pass enemies into array
 
     class InputHandler {                                            //InputHandler class will apply eventListeners to keyboard events and hold array of all currently active keys
         constructor(){
@@ -52,7 +52,7 @@ window.addEventListener('load', function(){                         //wrap whole
 
         }
         draw(context){                                                                            //takes context as an argument to specify which canvas we want to draw on
-            context.fillStyle = 'white';                                                          //this is so we can see rectangle for now. Makes it easier to play around with sizing and stuff. Set to "transperent" when you want to remove white box
+            context.fillStyle = 'transparent';                                                          //this is so we can see rectangle for now. Makes it easier to play around with sizing and stuff. Set to "transperent" when you want to remove white box
             context.fillRect(this.x, this.y, this.width, this.height);                            //call built in fillRect method to create a rectangle that will represent our player
             context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height,    //built in drawImage method used to draw player image. Pass it this.image from above that we used to grab our sprite sheet. 
                 this.width, this.height, this.x, this.y, this.width, this.height);                //[1] pass in this.image to insert grabbed sprite sheet from above [2 & 3 & 4 & 5]these determined the rectangle we wanted to crop out from our source spritesheet. The frameX and frameY select which frame in sprite sheet we want and the this.width & this.height place it in our canvas correctly  [6 & 7 & 8 & 9]All of these dictated where on our destination canvas our sprite would go...this.x and this.y adjusted sprite sheet linearly, placing one in box, but still including others. (8 & 9)this.width & this.height helped compress sprite sheet into our box, but mashed together
@@ -113,33 +113,35 @@ window.addEventListener('load', function(){                         //wrap whole
     class Enemy {                                                                //Enemy class will generate enemy object
         constructor(gameWidth, gameHeight){                                      //constructor expects gameWidth & gameHeight as arguments because enemies need to be aware of game area boundaries
             this.gameWidth = gameWidth;                                          //convert gameWidth & gameHeight(line below) to class properties
-            this.gameHeight = gameHeight;
+            this.gameHeight = gameHeight; 
             this.width = 160;                                                    //adjust this.width & this.height to size frame of our enemy sprite
             this.height = 200;
             this.image = document.getElementById('enemyImage');                  //grabbing our enemy sprite from html by Id
-            this.x = this.gameWidth;
-            this.y = this.gameHeight - this.height;
-            this.frameX = .75;
+            this.x = this.gameWidth;                                             //set enemies x cord to gameWidth so that it is hidden just outside the right edge of the canvas 
+            this.y = this.gameHeight - this.height;                              //vertical coord of the enemy is gameHeight minus the height of the enemy
+            this.frameX = .75;                                                   //frameX and frameY for navigation within sprite sheet
             this.frameY = 0;
+            this.speed = 8;
         }
         draw(context){                                                                           //draw method expects context as an argument 
-            context.drawImage(this.image, this.frameX * this.width, 0, this.width, this.height, this.x, 
+            context.drawImage(this.image, this.frameX * this.width, 0, this.width, this.height, this.x,     //passing it similar dimension as we did with player to situate our desired sprite in the frame
             this.y, this.width, this.height);                                                    //call built in drawImage method and pass this.image as well as dimensions to select frame on sprite sheet, just like we did in Player class 
         }
         update(){
-            this.x--;
+            this.x -= this.speed;                                                //adding this.speed to our the enemies this.x will effect how fast the enemies move horizontally through the game
         }
     }
 
     
     function handleEnemies(deltaTime) {                                                  //function is responsible for adding, animating, and removing enemies from the game
-        if (enemyTimer > enemyInterval){
-            enemies.push(new Enemy(canvas.width, canvas.height));
-            enemyTimer = 0;
+        if (enemyTimer > enemyInterval + randomEnemyInterval){                           //if enemyTimer is greater than our enemyInterval plus our randomly generated randomEnemyInterval it will push a new Enemy into our enemies array. Basically we have a base enemy interval and a randomly generated interval that get added together, and when our timer reaches that sum it pushes a new Enemy into the array
+            enemies.push(new Enemy(canvas.width, canvas.height));                        //taking empty enemies array we defined at the top and pushing into it an instance of Enemy class. We pass it canvas.width and canvas.height so it knows to operate within boundaries of our game
+            randomEnemyInterval = Math.random() * 1000 + 500;
+            enemyTimer = 0;                                                              //then set enemyTimer back to 0 so we can start enemy generation process over again
         }else {
-            enemyTimer += deltaTime;
+            enemyTimer += deltaTime;                                                     //else just keep adding deltaTime to our enemyTimer until limit defined in enemyInterval is reached. Using deltaTime like this ensures our events are timed the same on slow and fast computers because faster computers will have lower deltaTime
         }
-        enemies.forEach(enemy => {
+        enemies.forEach(enemy => {                                                      //we want to call our draw method and update method from within our Enemy class for EACH enemy object inside our enemies array
             enemy.draw(ctx);
             enemy.update();
         })
@@ -155,22 +157,23 @@ window.addEventListener('load', function(){                         //wrap whole
     const background = new Background(canvas.width, canvas.height);             //instance of Background class. I passed it our game dimension, canvas.width & canvas.height
                        
     
-    let lastTime = 0;
-    let enemyTimer = 0;
-    let enemyInterval = 1000;
+    let lastTime = 0;                                                           //helper variable which will hold the value of timeStamp fom the previous animation frame
+    let enemyTimer = 0;                                                         //helper variable to assist in timing periodically with deltaTime. Will count ms from 0 to a certain limit(enemyInterval below), and everytime it reaches that limit it will trigger something and reset itself back to 0
+    let enemyInterval = 1000;                                                   //helper variable to assist in timing periodically with deltaTime. Will be the time limit for enemyTimer(above)
+    let randomEnemyInterval = Math.random() * 1000 + 500;                       //this created a random interval whihc we will add to our enemyInterval, thus creating random spawn times for our enemies
 
-    function animate(timeStamp){                                                        // will run 60 x per second updating and drawing our game over and over 
-        const deltaTime = timeStamp - lastTime
-        lastTime = timeStamp;
+    function animate(timeStamp){                                               // will run 60 x per second updating and drawing our game over and over 
+        const deltaTime = timeStamp - lastTime                                 //deltaTime is the difference in ms between timeStamp from current loop and timeStamp from previous loop. (timeStamp value is generated in our requestAnimationFrame(animate) method.)  The value of deltaTime tells us how many ms our computer needs to serve one animation frame
+        lastTime = timeStamp;                                                  //then set lastTime to timeStamp so it can be used in the next loop as the value of timeStamp from the previous loop
         ctx.clearRect(0,0,canvas.width, canvas.height);                        //To show only current animation frame. This built in method will delete whole canvas between each animation loop. This prevents the canvas from leaving a trail, instead showing only current frame
         background.draw(ctx);                                                  //since we are drawing everything on a single canvas element(ctx), we have to draw our background before player and enemies, so that they are visible on top of background
         background.update();                                                   //call background.update inside our animation loop so our background animation will scroll
         player.draw(ctx);                                                      // this displays player by calling our "draw" method we wrote above. It expects "context" as an argument, so we pass it our "ctx" from the top 
         player.update(input);                                                  // call our update method 
-        handleEnemies(deltaTime);
+        handleEnemies(deltaTime);                                              //call handle enemies function from inside animation loop, pass it deltaTime because we are using it to trigger periodic events(enemy generation)
 
         requestAnimationFrame(animate);                                        //built in method to make everything in our animate function loop. Pass in "animate", the name of its parent function, to make endless animation loop
     }
-    animate(0);                                                                  //call animate function to start endless loop
+    animate(0);                                                                  //call animate function to start endless loop. Pass it 0 since it is not being passed timeStamp from requestAnimationFrame(animate) method
 
 });
