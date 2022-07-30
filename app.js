@@ -39,13 +39,17 @@ window.addEventListener('load', function(){                         //wrap whole
         constructor(gameWidth, gameHeight){                         //player object needs to be aware of game boundaries so pass in gameWidth and gameHeight as arguments
             this.gameWidth = gameWidth;                             //then game.Width & game.Height converted to class properties
             this.gameHeight = gameHeight;
-            this.width = 220;                                       //this.width & this.height dictate the size of the frame that holds our player sprite
+            this.width = 170;                                       //this.width & this.height dictate the size of the frame that holds our player sprite
             this.height = 300;
             this.x = 0;                                             // this.x cord moves player on horizontal axis and this.y moves player on vertical axis. Setting to 0 starts player on furthest left edge
             this.y = this.gameHeight - this.height;                 //this makes sure our player stands at the bottom of our specified game area
             this.image = document.getElementById('playerImage');    // grabbing our player sprite sheet and bringing it into the project
             this.frameX = 0;
             this.frameY = 0;                                        //changing this.frameX & this.frameY allows us to navigate to different frames in our sprite sheet
+            this.maxFrame = 1.2;
+            this.fps = 20;
+            this.frameTimer = 0;
+            this.frameInterval = 1000/this.fps
             this.speed = 0;                                         //affects player movement on x axis(horizontal); higher value = higher speed. Negative values move character backwards
             this.vy = 0;                                            //this.vy(velocity) pertains to vertical movement aka jumping
             this.weight = 1;                                        //need this.weight to prevent player from jumping and flying off the top of the screen. Basically functions as our gravity. Set it = to 1, because we are going to gradually add weight to this.vy so player begins to drop
@@ -57,7 +61,15 @@ window.addEventListener('load', function(){                         //wrap whole
             context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height,    //built in drawImage method used to draw player image. Pass it this.image from above that we used to grab our sprite sheet. 
                 this.width, this.height, this.x, this.y, this.width, this.height);                //[1] pass in this.image to insert grabbed sprite sheet from above [2 & 3 & 4 & 5]these determined the rectangle we wanted to crop out from our source spritesheet. The frameX and frameY select which frame in sprite sheet we want and the this.width & this.height place it in our canvas correctly  [6 & 7 & 8 & 9]All of these dictated where on our destination canvas our sprite would go...this.x and this.y adjusted sprite sheet linearly, placing one in box, but still including others. (8 & 9)this.width & this.height helped compress sprite sheet into our box, but mashed together
         }
-        update(input){                                                                            //this update method is so we can move player around based on our user inputs, thus it expects "input" as an argument
+        update(input, deltaTime){                                                                            //this update method is so we can move player around based on our user inputs, thus it expects "input" as an argument
+            //Sprite Animation
+            if (this.frameTimer > this.frameInterval){
+                if (this.frameX >= this.maxFrame) this.frameX = 0.275;
+                else this.frameX = 1.2;
+            } else {
+                this.frameTimer += deltaTime
+            }
+            //CONTROLS
             if (input.keys.indexOf('ArrowRight') > -1) {                                          //setting input.keys to > -1 basically makes sure that the input exists in our this.keys array
                 this.speed = 5;
             } else if (input.keys.indexOf('ArrowLeft') > -1) {
@@ -76,11 +88,11 @@ window.addEventListener('load', function(){                         //wrap whole
             if (!this.onGround()){                                                              //if this.onGround is false, meaning player is in air, then...(see below line)
                 this.vy += this.weight;                                                         //will take velocity and start gradually adding weight as long as player is in air, thus reducing velocity and bringing back down
                 this.frameY = 0;
-                this.frameX = 1.683;                                                            //this.frameY and this.frameX allow me to switch to different frame in my sprite sheet when player is in air(added jumping mario frame)
+                this.frameX = 2.2;                                                            //this.frameY and this.frameX allow me to switch to different frame in my sprite sheet when player is in air(added jumping mario frame)
             } else {
                 this.vy = 0;                                                                    //if player is not in air, and is back on ground, reset our velocity to 0
                 this.frameY = 0;
-                this.frameX = 0;
+                // this.frameX = 0.2;                                                           //took out this line because it bypasses our sprite animation above and makes Mario just stand still when on ground
             }
             if (this.y > this.gameHeight - this.height) this.y = this.gameHeight - this.height  //was having issue of player falling through floor, so this creates a vertical boundary to prevent that
         }
@@ -180,7 +192,7 @@ window.addEventListener('load', function(){                         //wrap whole
         background.draw(ctx);                                                  //since we are drawing everything on a single canvas element(ctx), we have to draw our background before player and enemies, so that they are visible on top of background
         background.update();                                                   //call background.update inside our animation loop so our background animation will scroll
         player.draw(ctx);                                                      // this displays player by calling our "draw" method we wrote above. It expects "context" as an argument, so we pass it our "ctx" from the top 
-        player.update(input);                                                  // call our update method 
+        player.update(input, deltaTime);                                       // call our update method. Passing in input for key commands and deltaTime for animation
         handleEnemies(deltaTime);                                              //call handle enemies function from inside animation loop, pass it deltaTime because we are using it to trigger periodic events(enemy generation)
 
         requestAnimationFrame(animate);                                        //built in method to make everything in our animate function loop. Pass in "animate", the name of its parent function, to make endless animation loop
