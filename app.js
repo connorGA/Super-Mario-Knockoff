@@ -66,6 +66,7 @@ window.addEventListener('load', function(){                         //wrap whole
             if (this.frameTimer > this.frameInterval){
                 if (this.frameX >= this.maxFrame) this.frameX = 0.275;
                 else this.frameX = 1.2;
+                this.frameTimer = 0;
             } else {
                 this.frameTimer += deltaTime
             }
@@ -91,7 +92,7 @@ window.addEventListener('load', function(){                         //wrap whole
                 this.frameX = 2.2;                                                            //this.frameY and this.frameX allow me to switch to different frame in my sprite sheet when player is in air(added jumping mario frame)
             } else {
                 this.vy = 0;                                                                    //if player is not in air, and is back on ground, reset our velocity to 0
-                this.frameY = 0;
+                // this.frameY = 0;
                 // this.frameX = 0.2;                                                           //took out this line because it bypasses our sprite animation above and makes Mario just stand still when on ground
             }
             if (this.y > this.gameHeight - this.height) this.y = this.gameHeight - this.height  //was having issue of player falling through floor, so this creates a vertical boundary to prevent that
