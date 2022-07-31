@@ -47,9 +47,9 @@ window.addEventListener('load', function(){                         //wrap whole
             this.frameX = 0;
             this.frameY = 0;                                        //changing this.frameX & this.frameY allows us to navigate to different frames in our sprite sheet
             this.maxFrame = 1.2;
-            this.fps = 20;
-            this.frameTimer = 0;
-            this.frameInterval = 1000/this.fps
+            this.fps = 20;                                          //to time frame rate with delta time we will need 3 helper properties. (1)fps will effect how fast we swap between individual animation frames in our sprite sheet
+            this.frameTimer = 0;                                    //(2)will count from 0 to frameInterval over and over 
+            this.frameInterval = 1000/this.fps;                     //(3)will define the value we are counting towards, its the value of how many ms each frame lasts
             this.speed = 0;                                         //affects player movement on x axis(horizontal); higher value = higher speed. Negative values move character backwards
             this.vy = 0;                                            //this.vy(velocity) pertains to vertical movement aka jumping
             this.weight = 1;                                        //need this.weight to prevent player from jumping and flying off the top of the screen. Basically functions as our gravity. Set it = to 1, because we are going to gradually add weight to this.vy so player begins to drop
@@ -63,12 +63,12 @@ window.addEventListener('load', function(){                         //wrap whole
         }
         update(input, deltaTime){                                                                            //this update method is so we can move player around based on our user inputs, thus it expects "input" as an argument
             //Sprite Animation
-            if (this.frameTimer > this.frameInterval){
-                if (this.frameX >= this.maxFrame) this.frameX = 0.275;
+            if (this.frameTimer > this.frameInterval){                                           //starts our count
+                if (this.frameX >= this.maxFrame) this.frameX = 0.275;                           //begins our animation at this.frameX(our standing mario sprite) and cycles through the sprite sheet up to the frameMax(our running mario). Basically the itteration is just switching back and forth between two sprites, but at speed it gives the appearance of mario running in motion
                 else this.frameX = 1.2;
-                this.frameTimer = 0;
+                this.frameTimer = 0;                                                             //set back to zero so count can begin again from starting position
             } else {
-                this.frameTimer += deltaTime
+                this.frameTimer += deltaTime                                                     //else, keep increasing frameTimer by deltaTime
             }
             //CONTROLS
             if (input.keys.indexOf('ArrowRight') > -1) {                                          //setting input.keys to > -1 basically makes sure that the input exists in our this.keys array
@@ -133,10 +133,10 @@ window.addEventListener('load', function(){                         //wrap whole
             this.x = this.gameWidth;                                             //set enemies x cord to gameWidth so that it is hidden just outside the right edge of the canvas 
             this.y = this.gameHeight - this.height;                              //vertical coord of the enemy is gameHeight minus the height of the enemy
             this.frameX = .75;                                                   //frameX and frameY for navigation within sprite sheet
-            this.maxFrame = 2.05;
-            this.fps = 20;
-            this.frameTimer = 0;
-            this.frameInterval = 1000/this.fps;
+            this.maxFrame = 2.05;                                                //setting maxFrame so sprite animation can itterate up to this value 
+            this.fps = 20;                                                       //to time frame rate with delta time we will need 3 helper properties. (1)fps will effect how fast we swap between individual animation frames in our sprite sheet
+            this.frameTimer = 0;                                                 //(2)will count from 0 to frameInterval over and over 
+            this.frameInterval = 1000/this.fps;                                  //(3)will define the value we are counting towards, its the value of how many ms each frame lasts
             this.frameY = 0;
             this.speed = 8;
         }
@@ -144,13 +144,13 @@ window.addEventListener('load', function(){                         //wrap whole
             context.drawImage(this.image, this.frameX * this.width, 0, this.width, this.height, this.x,     //passing it similar dimension as we did with player to situate our desired sprite in the frame
             this.y, this.width, this.height);                                                    //call built in drawImage method and pass this.image as well as dimensions to select frame on sprite sheet, just like we did in Player class 
         }
-        update(deltaTime){
-            if (this.frameTimer > this.frameInterval){
-                if (this.frameX >= this.maxFrame) this.frameX = .75;
+        update(deltaTime){                                                                       // make sure update method expects deltaTime value
+            if (this.frameTimer > this.frameInterval){                                          //begins count
+                if (this.frameX >= this.maxFrame) this.frameX = .75;                            //cycles through our sprite sheet beginning at start (frameX = .75, our left foot forward position) and to our frameMax which is set to the right foot goomba. The itteration gives the appearance of goomba stepping in motion, but really its just switching back and forth between two sprite images
                 else this.frameX = 2.05;
-                this.frameTimer = 0;
+                this.frameTimer = 0;                                                            //reset back to 0 so it can count again
             } else {
-                this.frameTimer += deltaTime;
+                this.frameTimer += deltaTime;                                                   //else, keep increasing frameTimer by deltaTime
             }
             this.x -= this.speed;                                                //adding this.speed to our the enemies this.x will effect how fast the enemies move horizontally through the game
         }
@@ -160,14 +160,14 @@ window.addEventListener('load', function(){                         //wrap whole
     function handleEnemies(deltaTime) {                                                  //function is responsible for adding, animating, and removing enemies from the game
         if (enemyTimer > enemyInterval + randomEnemyInterval){                           //if enemyTimer is greater than our enemyInterval plus our randomly generated randomEnemyInterval it will push a new Enemy into our enemies array. Basically we have a base enemy interval and a randomly generated interval that get added together, and when our timer reaches that sum it pushes a new Enemy into the array
             enemies.push(new Enemy(canvas.width, canvas.height));                        //taking empty enemies array we defined at the top and pushing into it an instance of Enemy class. We pass it canvas.width and canvas.height so it knows to operate within boundaries of our game
-            randomEnemyInterval = Math.random() * 1000 + 500;
+            randomEnemyInterval = Math.random() * 3000 + 500;
             enemyTimer = 0;                                                              //then set enemyTimer back to 0 so we can start enemy generation process over again
         }else {
             enemyTimer += deltaTime;                                                     //else just keep adding deltaTime to our enemyTimer until limit defined in enemyInterval is reached. Using deltaTime like this ensures our events are timed the same on slow and fast computers because faster computers will have lower deltaTime
         }
         enemies.forEach(enemy => {                                                      //we want to call our draw method and update method from within our Enemy class for EACH enemy object inside our enemies array
             enemy.draw(ctx);
-            enemy.update(deltaTime);
+            enemy.update(deltaTime);                                                    //pass deltaTime into enemy.update method
         })
     }
 
