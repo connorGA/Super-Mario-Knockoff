@@ -6,7 +6,7 @@ window.addEventListener('load', function(){                         //wrap whole
     canvas.width = 1400;
     canvas.height = 720;                                            //canvas.width and canvas.height are adjusting the canvas box to the desired size
     let enemies = [];                                               //since we want multiple enemies on screen at the same time, we will create an enemies variable and set it equal to an empty array, so that later we can pass enemies into array
-
+    let score = 0;
     class InputHandler {                                            //InputHandler class will apply eventListeners to keyboard events and hold array of all currently active keys
         constructor(){
             this.keys = [];                                         //this.keys property is set equal to empty array. Keys will be added and removed from array as they are pressed and released to keep track of multiple key presses
@@ -56,12 +56,47 @@ window.addEventListener('load', function(){                         //wrap whole
 
         }
         draw(context){                                                                            //takes context as an argument to specify which canvas we want to draw on
+            context.strokeStyle = 'white'
+            context.strokeRect(this.x, this.y, this.width, this.height);
             context.fillStyle = 'transparent';                                                          //this is so we can see rectangle for now. Makes it easier to play around with sizing and stuff. Set to "transperent" when you want to remove white box
             context.fillRect(this.x, this.y, this.width, this.height);                            //call built in fillRect method to create a rectangle that will represent our player
             context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height,    //built in drawImage method used to draw player image. Pass it this.image from above that we used to grab our sprite sheet. 
                 this.width, this.height, this.x, this.y, this.width, this.height);                //[1] pass in this.image to insert grabbed sprite sheet from above [2 & 3 & 4 & 5]these determined the rectangle we wanted to crop out from our source spritesheet. The frameX and frameY select which frame in sprite sheet we want and the this.width & this.height place it in our canvas correctly  [6 & 7 & 8 & 9]All of these dictated where on our destination canvas our sprite would go...this.x and this.y adjusted sprite sheet linearly, placing one in box, but still including others. (8 & 9)this.width & this.height helped compress sprite sheet into our box, but mashed together
         }
-        update(input, deltaTime){                                                                            //this update method is so we can move player around based on our user inputs, thus it expects "input" as an argument
+        update(input, deltaTime, enemies){                                                                            //this update method is so we can move player around based on our user inputs, thus it expects "input" as an argument
+            //collision detection
+            enemies.forEach(enemy => {
+                this.x + this.width > enemy.x && 
+                this.x < enemy.x + enemy.width &&
+                this.y + this.height > enemy.y &&                   //I HATE COLLISION DETECTION
+                this.y < enemy.y + enemy.height;
+                if (enemies) {
+                    score++;
+                }
+            })
+            
+            
+            
+            
+            
+            // let hit = detectHit(player, enemies)
+           
+            // function detectHit(mario, goomba) {
+            //     let hitTest =
+            //     mario.y + mario.height > goomba.y &&
+            //     mario.y < goomba.y + goomba.height &&
+            //     mario.x + mario.width > goomba.x &&
+            //     mario.x < goomba.x + goomba.width;
+            
+            //     if (hitTest) {
+            //         score + 100;
+                    
+            //     } else {
+            //         return false;
+            //     }
+            // }
+            
+            
             //Sprite Animation
             if (this.frameTimer > this.frameInterval){                                           //starts our count
                 if (this.frameX >= this.maxFrame) this.frameX = 0.275;                           //begins our animation at this.frameX(our standing mario sprite) and cycles through the sprite sheet up to the frameMax(our running mario). Basically the itteration is just switching back and forth between two sprites, but at speed it gives the appearance of mario running in motion
@@ -72,9 +107,9 @@ window.addEventListener('load', function(){                         //wrap whole
             }
             //CONTROLS
             if (input.keys.indexOf('ArrowRight') > -1) {                                          //setting input.keys to > -1 basically makes sure that the input exists in our this.keys array
-                this.speed = 5;
+                this.speed = 8;
             } else if (input.keys.indexOf('ArrowLeft') > -1) {
-                this.speed = -5;
+                this.speed = -8;
             } else if (input.keys.indexOf('ArrowUp') > -1 && this.onGround()) {                   // adding "&& this.onGround" prevents player from double jumping. Can now only jump if standing on ground. Keep in mind, velocity begins negative as it initially goes up, reducing from our set -32 until it reaches 0 at the peak, and then as it falls that value continues to count from zero up into positive integers. When we hit floor, line 80 sets vy back to 0
                 this.vy -= 32;
             } else {
@@ -111,7 +146,7 @@ window.addEventListener('load', function(){                         //wrap whole
             this.y = 0;
             this.width = 1500;                                                                                  //this.width & this.height(line below) based on size of my backround image. Sizing it on the page properly
             this.height = 815;
-            this.speed = 13;                                                                                    //this.speed will dictate how fast our background scrolls by
+            this.speed = 6;                                                                                    //this.speed will dictate how fast our background scrolls by
         }
         draw(context){                                                                                          //takes context as an argument to specify which canvas we want to draw on
             context.drawImage(this.image, this.x, this.y, this.width, this. height);                            //call built in drawImage method
@@ -128,7 +163,7 @@ window.addEventListener('load', function(){                         //wrap whole
             this.gameWidth = gameWidth;                                          //convert gameWidth & gameHeight(line below) to class properties
             this.gameHeight = gameHeight; 
             this.width = 160;                                                    //adjust this.width & this.height to size frame of our enemy sprite
-            this.height = 200;
+            this.height = 226;
             this.image = document.getElementById('enemyImage');                  //grabbing our enemy sprite from html by Id
             this.x = this.gameWidth;                                             //set enemies x cord to gameWidth so that it is hidden just outside the right edge of the canvas 
             this.y = this.gameHeight - this.height;                              //vertical coord of the enemy is gameHeight minus the height of the enemy
@@ -141,6 +176,8 @@ window.addEventListener('load', function(){                         //wrap whole
             this.speed = 8;
         }
         draw(context){                                                                           //draw method expects context as an argument 
+            context.strokeStyle = 'white'
+            context.strokeRect(this.x, this.y, this.width, this.height);
             context.drawImage(this.image, this.frameX * this.width, 0, this.width, this.height, this.x,     //passing it similar dimension as we did with player to situate our desired sprite in the frame
             this.y, this.width, this.height);                                                    //call built in drawImage method and pass this.image as well as dimensions to select frame on sprite sheet, just like we did in Player class 
         }
@@ -171,9 +208,12 @@ window.addEventListener('load', function(){                         //wrap whole
         })
     }
 
-    function displayStatusText() {                                              //utility function that handles things like score and "gameover" message
-
+    function displayStatusText(context) {                                              //utility function that handles things like score and "gameover" message
+        context.fillStyle = "orange";
+        context.font = "40px helvetica";
+        context.fillText('Score: ' + score, 20, 50);
     }
+
 
         
     const input = new InputHandler();                                           //instance of InputHandler class that will run all code inside constructor, so at this point the eventListener "keydown" is applied
@@ -193,8 +233,9 @@ window.addEventListener('load', function(){                         //wrap whole
         background.draw(ctx);                                                  //since we are drawing everything on a single canvas element(ctx), we have to draw our background before player and enemies, so that they are visible on top of background
         background.update();                                                   //call background.update inside our animation loop so our background animation will scroll
         player.draw(ctx);                                                      // this displays player by calling our "draw" method we wrote above. It expects "context" as an argument, so we pass it our "ctx" from the top 
-        player.update(input, deltaTime);                                       // call our update method. Passing in input for key commands and deltaTime for animation
+        player.update(input, deltaTime, enemies);                                       // call our update method. Passing in input for key commands and deltaTime for animation
         handleEnemies(deltaTime);                                              //call handle enemies function from inside animation loop, pass it deltaTime because we are using it to trigger periodic events(enemy generation)
+        displayStatusText(ctx);
 
         requestAnimationFrame(animate);                                        //built in method to make everything in our animate function loop. Pass in "animate", the name of its parent function, to make endless animation loop
     }
