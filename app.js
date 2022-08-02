@@ -58,6 +58,9 @@ window.addEventListener('load', function(){                         //wrap whole
         draw(context){                                                                            //takes context as an argument to specify which canvas we want to draw on
             context.strokeStyle = 'white'
             context.strokeRect(this.x, this.y, this.width, this.height);
+            context.beginPath();
+            context.arc(this.x + this.width/2, this.y + this.height/2, this.width/2, 0, Math.PI * 2);
+            context.stroke();
             context.fillStyle = 'transparent';                                                          //this is so we can see rectangle for now. Makes it easier to play around with sizing and stuff. Set to "transperent" when you want to remove white box
             context.fillRect(this.x, this.y, this.width, this.height);                            //call built in fillRect method to create a rectangle that will represent our player
             context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height,    //built in drawImage method used to draw player image. Pass it this.image from above that we used to grab our sprite sheet. 
@@ -66,35 +69,13 @@ window.addEventListener('load', function(){                         //wrap whole
         update(input, deltaTime, enemies){                                                                            //this update method is so we can move player around based on our user inputs, thus it expects "input" as an argument
             //collision detection
             enemies.forEach(enemy => {
-                this.x + this.width > enemy.x && 
-                this.x < enemy.x + enemy.width &&
-                this.y + this.height > enemy.y &&                   //I HATE COLLISION DETECTION
-                this.y < enemy.y + enemy.height;
-                if (enemies) {
+                const dx = enemy.x - this.x;
+                const dy = enemy.y - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance < enemy.width/2 + this.width/2) {
                     score++;
                 }
             })
-            
-            
-            
-            
-            
-            // let hit = detectHit(player, enemies)
-           
-            // function detectHit(mario, goomba) {
-            //     let hitTest =
-            //     mario.y + mario.height > goomba.y &&
-            //     mario.y < goomba.y + goomba.height &&
-            //     mario.x + mario.width > goomba.x &&
-            //     mario.x < goomba.x + goomba.width;
-            
-            //     if (hitTest) {
-            //         score + 100;
-                    
-            //     } else {
-            //         return false;
-            //     }
-            // }
             
             
             //Sprite Animation
@@ -178,6 +159,9 @@ window.addEventListener('load', function(){                         //wrap whole
         draw(context){                                                                           //draw method expects context as an argument 
             context.strokeStyle = 'white'
             context.strokeRect(this.x, this.y, this.width, this.height);
+            context.beginPath();
+            context.arc(this.x + this.width/2, this.y + this.height/2, this.width/2, 0, Math.PI * 2);
+            context.stroke();
             context.drawImage(this.image, this.frameX * this.width, 0, this.width, this.height, this.x,     //passing it similar dimension as we did with player to situate our desired sprite in the frame
             this.y, this.width, this.height);                                                    //call built in drawImage method and pass this.image as well as dimensions to select frame on sprite sheet, just like we did in Player class 
         }
