@@ -7,7 +7,7 @@ window.addEventListener('load', function(){                         //wrap whole
     canvas.height = 720;                                            //canvas.width and canvas.height are adjusting the canvas box to the desired size
     let enemies = [];                                               //since we want multiple enemies on screen at the same time, we will create an enemies variable and set it equal to an empty array, so that later we can pass enemies into array
     let score = 0;                                                  //score is tied to collision detection. Score++ everytime enemy is killed
-    
+    let gameOver = false;                                           //for when mario hits goomba while on ground(aka dies)
    
     class InputHandler {                                            //InputHandler class will apply eventListeners to keyboard events and hold array of all currently active keys
         constructor(){
@@ -77,7 +77,9 @@ window.addEventListener('load', function(){                         //wrap whole
                 if (distance < enemy.width/2 + this.width/2 && this.vy > 0) {                    //first part of statement(before &&) measures distance between enemy circles and concludes if they are intersecting. Second part only allows mario to kill goomba if he is falling(aka jummping on head)
                     enemy.markedForDeletion = true;                        
                     score++;
-                } 
+                } else if(distance < enemy.width/2 + this.width/2 && this.vy === 0){
+                    gameOver = true;
+                }
             })
             
             
@@ -229,7 +231,7 @@ window.addEventListener('load', function(){                         //wrap whole
         handleEnemies(deltaTime);                                              //call handle enemies function from inside animation loop, pass it deltaTime because we are using it to trigger periodic events(enemy generation)
         displayStatusText(ctx);
 
-        requestAnimationFrame(animate);                                        //built in method to make everything in our animate function loop. Pass in "animate", the name of its parent function, to make endless animation loop
+        if (!gameOver) requestAnimationFrame(animate);                                        //built in method to make everything in our animate function loop. Pass in "animate", the name of its parent function, to make endless animation loop. Only runs if gameOver is false, meaning mario is still alive
     }
     animate(0);                                                                  //call animate function to start endless loop. Pass it 0 since it is not being passed timeStamp from requestAnimationFrame(animate) method
 
