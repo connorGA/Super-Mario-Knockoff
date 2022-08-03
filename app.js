@@ -6,7 +6,7 @@ window.addEventListener('load', function(){                         //wrap whole
     canvas.width = 1400;
     canvas.height = 720;                                            //canvas.width and canvas.height are adjusting the canvas box to the desired size
     let enemies = [];                                               //since we want multiple enemies on screen at the same time, we will create an enemies variable and set it equal to an empty array, so that later we can pass enemies into array
-    let score = 0;
+    let score = 0;                                                  //score is tied to collision detection. Score++ everytime enemy is killed
     
    
     class InputHandler {                                            //InputHandler class will apply eventListeners to keyboard events and hold array of all currently active keys
@@ -61,7 +61,7 @@ window.addEventListener('load', function(){                         //wrap whole
             context.strokeStyle = 'white'
             context.strokeRect(this.x, this.y, this.width, this.height);
             context.beginPath();
-            context.arc(this.x + this.width/2, this.y + this.height/2, this.width/2, 0, Math.PI * 2);
+            context.arc(this.x + this.width/2, this.y + this.height/2, this.width/2, 0, Math.PI * 2);  //this line as well as lines above and below created circular hitboxes within our rectangular hitboxes
             context.stroke();
             context.fillStyle = 'transparent';                                                          //this is so we can see rectangle for now. Makes it easier to play around with sizing and stuff. Set to "transperent" when you want to remove white box
             context.fillRect(this.x, this.y, this.width, this.height);                            //call built in fillRect method to create a rectangle that will represent our player
@@ -70,14 +70,14 @@ window.addEventListener('load', function(){                         //wrap whole
         }
         update(input, deltaTime, enemies){                                                                            //this update method is so we can move player around based on our user inputs, thus it expects "input" as an argument
             //collision detection
-            enemies.forEach(enemy => {
-                const dx = enemy.x - this.x;
-                const dy = enemy.y - this.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance < enemy.width/2 + this.width/2) {
+            enemies.forEach(enemy => {                                                            //need to run for every enemy in enemies array so passed enemies above as argument and ran forEach
+                const dx = enemy.x - this.x;                                                      
+                const dy = enemy.y - this.y;                                                     //we need to find sum of radius of both circles in order to detect when they intrude on one another 
+                const distance = Math.sqrt(dx * dx + dy * dy);                                   //use Pythagorean theorum to calculate hypotenus(distance) between centerpoint of both circles
+                if (distance < enemy.width/2 + this.width/2 && this.vy > 0) {                    //first part of statement(before &&) measures distance between enemy circles and concludes if they are intersecting. Second part only allows mario to kill goomba if he is falling(aka jummping on head)
                     enemy.markedForDeletion = true;                        
                     score++;
-                }
+                } 
             })
             
             
