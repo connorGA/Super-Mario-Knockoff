@@ -77,6 +77,7 @@ window.addEventListener('load', function(){                         //wrap whole
                 if (distance < enemy.width/2 + this.width/2 && this.vy > 0) {                    //first part of statement(before &&) measures distance between enemy circles and concludes if they are intersecting. Second part only allows mario to kill goomba if he is falling(aka jummping on head)
                     enemy.markedForDeletion = true;                        
                     score++;
+                    
                 } else if(distance < enemy.width/2 + this.width/2 && this.vy === 0){
                     gameOver = true;
                 }
@@ -206,6 +207,21 @@ window.addEventListener('load', function(){                         //wrap whole
         context.fillStyle = "orange";
         context.font = "40px helvetica";
         context.fillText('Score: ' + score, 20, 50);
+        if (gameOver){
+            context.textAlign = "center";
+            context.fillStyle = "black";
+            context.fillText("GAME OVER!", canvas.width/2 + 2, 300);            //all of this is simply to display GAME OVER! in the middle of the screen when you die
+            context.textAlign = "center";
+            context.fillStyle = "red";
+            context.fillText("GAME OVER!", canvas.width/2 + 2, 302);           //added duplicate with diffenet color on top and slighly offset to give sort of shadow effect
+            
+            context.textAlign = "center";
+            context.fillStyle = "orange";
+            context.fillText(`Final Score: ${score}`, canvas.width/2 + 2, 400);
+            context.textAlign = "center";
+            context.fillStyle = "blue";
+            context.fillText(`Final Score: ${score}`, canvas.width/2 + 2, 402);
+        }
     }
 
 
@@ -231,7 +247,7 @@ window.addEventListener('load', function(){                         //wrap whole
         handleEnemies(deltaTime);                                              //call handle enemies function from inside animation loop, pass it deltaTime because we are using it to trigger periodic events(enemy generation)
         displayStatusText(ctx);
 
-        if (!gameOver) requestAnimationFrame(animate);                                        //built in method to make everything in our animate function loop. Pass in "animate", the name of its parent function, to make endless animation loop. Only runs if gameOver is false, meaning mario is still alive
+        if (!gameOver) requestAnimationFrame(animate);                         //built in method to make everything in our animate function loop. Pass in "animate", the name of its parent function, to make endless animation loop. Only runs if gameOver is false, meaning mario is still alive
     }
     animate(0);                                                                  //call animate function to start endless loop. Pass it 0 since it is not being passed timeStamp from requestAnimationFrame(animate) method
 
