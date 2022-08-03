@@ -1,4 +1,4 @@
-console.log('hello');
+
 
 window.addEventListener('load', function(){                         //wrap whole game in this so JS waits for all assets like sprite sheets and images to load before it executes code
     const canvas = document.getElementById('canvas1');              //assign canvas a variable and grab it off our page
@@ -98,7 +98,7 @@ window.addEventListener('load', function(){                         //wrap whole
             } else if (input.keys.indexOf('ArrowLeft') > -1) {
                 this.speed = -8;
             } else if (input.keys.indexOf('ArrowUp') > -1 && this.onGround()) {                   // adding "&& this.onGround" prevents player from double jumping. Can now only jump if standing on ground. Keep in mind, velocity begins negative as it initially goes up, reducing from our set -32 until it reaches 0 at the peak, and then as it falls that value continues to count from zero up into positive integers. When we hit floor, line 80 sets vy back to 0
-                this.vy -= 32;
+                this.vy -= 28;
             } else {
                 this.speed = 0;                                                                  //setting this.speed back to zero after all of these inputs tells player to stop moving once key inputs are no longer pressed, rather than having player continually moving in a direciton forever
             }
@@ -224,7 +224,6 @@ window.addEventListener('load', function(){                         //wrap whole
         }
     }
 
-
         
     const input = new InputHandler();                                           //instance of InputHandler class that will run all code inside constructor, so at this point the eventListener "keydown" is applied
     const player = new Player(canvas.width, canvas.height);                     //instance of Player class. Our constuctor expects a gameWidth and gameHeight as arguments, so we will pass it the canvas.width and canvas.height we specified at the top. This keeps our player inside our canvas boundaries
@@ -233,7 +232,7 @@ window.addEventListener('load', function(){                         //wrap whole
     
     let lastTime = 0;                                                           //helper variable which will hold the value of timeStamp fom the previous animation frame
     let enemyTimer = 0;                                                         //helper variable to assist in timing periodically with deltaTime. Will count ms from 0 to a certain limit(enemyInterval below), and everytime it reaches that limit it will trigger something and reset itself back to 0
-    let enemyInterval = 1000;                                                   //helper variable to assist in timing periodically with deltaTime. Will be the time limit for enemyTimer(above)
+    let enemyInterval = 500;                                                   //helper variable to assist in timing periodically with deltaTime. Will be the time limit for enemyTimer(above)
     let randomEnemyInterval = Math.random() * 1000 + 500;                       //this created a random interval whihc we will add to our enemyInterval, thus creating random spawn times for our enemies
 
     function animate(timeStamp){                                               // will run 60 x per second updating and drawing our game over and over 
