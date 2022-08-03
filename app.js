@@ -7,6 +7,8 @@ window.addEventListener('load', function(){                         //wrap whole
     canvas.height = 720;                                            //canvas.width and canvas.height are adjusting the canvas box to the desired size
     let enemies = [];                                               //since we want multiple enemies on screen at the same time, we will create an enemies variable and set it equal to an empty array, so that later we can pass enemies into array
     let score = 0;
+    
+   
     class InputHandler {                                            //InputHandler class will apply eventListeners to keyboard events and hold array of all currently active keys
         constructor(){
             this.keys = [];                                         //this.keys property is set equal to empty array. Keys will be added and removed from array as they are pressed and released to keep track of multiple key presses
@@ -73,6 +75,7 @@ window.addEventListener('load', function(){                         //wrap whole
                 const dy = enemy.y - this.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
                 if (distance < enemy.width/2 + this.width/2) {
+                    enemy.markedForDeletion = true;                        
                     score++;
                 }
             })
@@ -155,6 +158,7 @@ window.addEventListener('load', function(){                         //wrap whole
             this.frameInterval = 1000/this.fps;                                  //(3)will define the value we are counting towards, its the value of how many ms each frame lasts
             this.frameY = 0;
             this.speed = 8;
+            this.markedForDeletion = false;
         }
         draw(context){                                                                           //draw method expects context as an argument 
             context.strokeStyle = 'white'
@@ -174,6 +178,8 @@ window.addEventListener('load', function(){                         //wrap whole
                 this.frameTimer += deltaTime;                                                   //else, keep increasing frameTimer by deltaTime
             }
             this.x -= this.speed;                                                //adding this.speed to our the enemies this.x will effect how fast the enemies move horizontally through the game
+           
+
         }
     }
 
@@ -181,6 +187,7 @@ window.addEventListener('load', function(){                         //wrap whole
     function handleEnemies(deltaTime) {                                                  //function is responsible for adding, animating, and removing enemies from the game
         if (enemyTimer > enemyInterval + randomEnemyInterval){                           //if enemyTimer is greater than our enemyInterval plus our randomly generated randomEnemyInterval it will push a new Enemy into our enemies array. Basically we have a base enemy interval and a randomly generated interval that get added together, and when our timer reaches that sum it pushes a new Enemy into the array
             enemies.push(new Enemy(canvas.width, canvas.height));                        //taking empty enemies array we defined at the top and pushing into it an instance of Enemy class. We pass it canvas.width and canvas.height so it knows to operate within boundaries of our game
+            console.log(enemies);
             randomEnemyInterval = Math.random() * 3000 + 500;
             enemyTimer = 0;                                                              //then set enemyTimer back to 0 so we can start enemy generation process over again
         }else {
@@ -189,7 +196,8 @@ window.addEventListener('load', function(){                         //wrap whole
         enemies.forEach(enemy => {                                                      //we want to call our draw method and update method from within our Enemy class for EACH enemy object inside our enemies array
             enemy.draw(ctx);
             enemy.update(deltaTime);                                                    //pass deltaTime into enemy.update method
-        })
+        });
+        enemies = enemies.filter(enemy => !enemy.markedForDeletion)
     }
 
     function displayStatusText(context) {                                              //utility function that handles things like score and "gameover" message
