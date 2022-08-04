@@ -1,9 +1,3 @@
-const startButton = document.getElementById('startButton');
-console.log(startButton);
-// startButton.addEventListener('click', (event) => {
-    
-// })
-
 
 window.addEventListener('load', function(){                         //wrap whole game in this so JS waits for all assets like sprite sheets and images to load before it executes code
     const canvas = document.getElementById('canvas1');              //assign canvas a variable and grab it off our page
