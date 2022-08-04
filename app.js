@@ -222,7 +222,16 @@ window.addEventListener('load', function(){                         //wrap whole
             context.fillText(`Final Score: ${score}`, canvas.width/2 + 2, 402);
         }
     }
+    // let restartButton = document.createElement("button");
+    // restartButton.innerHTML = "reset"
+    // restartButton.type = "reset"
 
+    // function restart (context) {
+    //     if (gameOver) {
+    //         context.restartButton
+    //     }
+    // }
+    // }
         
     const input = new InputHandler();                                           //instance of InputHandler class that will run all code inside constructor, so at this point the eventListener "keydown" is applied
     const player = new Player(canvas.width, canvas.height);                     //instance of Player class. Our constuctor expects a gameWidth and gameHeight as arguments, so we will pass it the canvas.width and canvas.height we specified at the top. This keeps our player inside our canvas boundaries
