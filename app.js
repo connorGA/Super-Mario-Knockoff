@@ -1,3 +1,8 @@
+const startButton = document.getElementById('startButton');
+console.log(startButton);
+// startButton.addEventListener('click', (event) => {
+    
+// })
 
 
 window.addEventListener('load', function(){                         //wrap whole game in this so JS waits for all assets like sprite sheets and images to load before it executes code
@@ -63,7 +68,7 @@ window.addEventListener('load', function(){                         //wrap whole
             context.beginPath();
             context.arc(this.x + this.width/2, this.y + this.height/2, this.width/2, 0, Math.PI * 2);  //this line as well as lines above and below created circular hitboxes within our rectangular hitboxes
             context.stroke();
-            context.fillStyle = 'transparent';                                                          //this is so we can see rectangle for now. Makes it easier to play around with sizing and stuff. Set to "transperent" when you want to remove white box
+            context.fillStyle = 'white';                                                          //this is so we can see rectangle for now. Makes it easier to play around with sizing and stuff. Set to "transperent" when you want to remove white box
             context.fillRect(this.x, this.y, this.width, this.height);                            //call built in fillRect method to create a rectangle that will represent our player
             context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height,    //built in drawImage method used to draw player image. Pass it this.image from above that we used to grab our sprite sheet. 
                 this.width, this.height, this.x, this.y, this.width, this.height);                //[1] pass in this.image to insert grabbed sprite sheet from above [2 & 3 & 4 & 5]these determined the rectangle we wanted to crop out from our source spritesheet. The frameX and frameY select which frame in sprite sheet we want and the this.width & this.height place it in our canvas correctly  [6 & 7 & 8 & 9]All of these dictated where on our destination canvas our sprite would go...this.x and this.y adjusted sprite sheet linearly, placing one in box, but still including others. (8 & 9)this.width & this.height helped compress sprite sheet into our box, but mashed together
@@ -232,7 +237,7 @@ window.addEventListener('load', function(){                         //wrap whole
     
     let lastTime = 0;                                                           //helper variable which will hold the value of timeStamp fom the previous animation frame
     let enemyTimer = 0;                                                         //helper variable to assist in timing periodically with deltaTime. Will count ms from 0 to a certain limit(enemyInterval below), and everytime it reaches that limit it will trigger something and reset itself back to 0
-    let enemyInterval = 500;                                                   //helper variable to assist in timing periodically with deltaTime. Will be the time limit for enemyTimer(above)
+    let enemyInterval = 300;                                                   //helper variable to assist in timing periodically with deltaTime. Will be the time limit for enemyTimer(above)
     let randomEnemyInterval = Math.random() * 1000 + 500;                       //this created a random interval whihc we will add to our enemyInterval, thus creating random spawn times for our enemies
 
     function animate(timeStamp){                                               // will run 60 x per second updating and drawing our game over and over 
@@ -251,3 +256,4 @@ window.addEventListener('load', function(){                         //wrap whole
     animate(0);                                                                  //call animate function to start endless loop. Pass it 0 since it is not being passed timeStamp from requestAnimationFrame(animate) method
 
 });
+
