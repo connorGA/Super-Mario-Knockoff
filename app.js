@@ -6,8 +6,9 @@ window.addEventListener('load', function start(){                         //wrap
     canvas.height = 720;                                            //canvas.width and canvas.height are adjusting the canvas box to the desired size
     let enemies = [];                                               //since we want multiple enemies on screen at the same time, we will create an enemies variable and set it equal to an empty array, so that later we can pass enemies into array
     let score = 0;                                                  //score is tied to collision detection. Score++ everytime enemy is killed
+    let dragonBallCounter = 0;
     let gameOver = false;                                           //for when mario hits goomba while on ground(aka dies)
-    
+    let dragonBalls = [];
     
    
     class InputHandler {                                            //InputHandler class will apply eventListeners to keyboard events and hold array of all currently active keys
@@ -64,13 +65,13 @@ window.addEventListener('load', function start(){                         //wrap
             context.beginPath();
             context.arc(this.x + this.width/2, this.y + this.height/2, this.width/2, 0, Math.PI * 2);  //this line as well as lines above and below created circular hitboxes within our rectangular hitboxes
             context.stroke();
-            context.fillStyle = 'white';                                                          //this is so we can see rectangle for now. Makes it easier to play around with sizing and stuff. Set to "transperent" when you want to remove white box
+            context.fillStyle = 'transparent';                                                          //this is so we can see rectangle for now. Makes it easier to play around with sizing and stuff. Set to "transperent" when you want to remove white box
             context.fillRect(this.x, this.y, this.width, this.height);                            //call built in fillRect method to create a rectangle that will represent our player
             context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height,    //built in drawImage method used to draw player image. Pass it this.image from above that we used to grab our sprite sheet. 
                 this.width, this.height, this.x, this.y, this.width, this.height);                //[1] pass in this.image to insert grabbed sprite sheet from above [2 & 3 & 4 & 5]these determined the rectangle we wanted to crop out from our source spritesheet. The frameX and frameY select which frame in sprite sheet we want and the this.width & this.height place it in our canvas correctly  [6 & 7 & 8 & 9]All of these dictated where on our destination canvas our sprite would go...this.x and this.y adjusted sprite sheet linearly, placing one in box, but still including others. (8 & 9)this.width & this.height helped compress sprite sheet into our box, but mashed together
         }
-        update(input, deltaTime, enemies){                                                                            //this update method is so we can move player around based on our user inputs, thus it expects "input" as an argument
-            //collision detection
+        update(input, deltaTime, enemies, dragonBalls){                                                                            //this update method is so we can move player around based on our user inputs, thus it expects "input" as an argument
+            //collision detection for enemies
             enemies.forEach(enemy => {                                                            //need to run for every enemy in enemies array so passed enemies above as argument and ran forEach
                 const dx = enemy.x - this.x;                                                      
                 const dy = enemy.y - this.y;                                                     //we need to find sum of radius of both circles in order to detect when they intrude on one another 
@@ -82,7 +83,19 @@ window.addEventListener('load', function start(){                         //wrap
                 } else if(distance < enemy.width/2 + this.width/2 && this.vy === 0){
                     gameOver = true;
                 }
-            })
+            });
+            //
+            dragonBalls.forEach(ball => {                                                            //need to run for every enemy in enemies array so passed enemies above as argument and ran forEach
+                const dx2 = ball.x - this.x;                                                      
+                const dy2 = ball.y - this.y;                                                     //we need to find sum of radius of both circles in order to detect when they intrude on one another 
+                const distance2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);                                   //use Pythagorean theorum to calculate hypotenus(distance) between centerpoint of both circles
+                if (distance2 < ball.width/2 + this.width/2) {                    //first part of statement(before &&) measures distance between enemy circles and concludes if they are intersecting. Second part only allows mario to kill goomba if he is falling(aka jummping on head)
+                    ball.markedForDeletion = true;                        
+                    dragonBallCounter++;  
+                } 
+            });
+            
+            
             
             
             //Sprite Animation
@@ -146,6 +159,81 @@ window.addEventListener('load', function start(){                         //wrap
         }
     }
 
+    
+
+    class Powerup {
+        constructor(gameWidth, gameHeight){
+            this.gameWidth = gameWidth;
+            this.gameHeight = gameHeight;
+            this.width = 60;
+            this.height = 60;
+            this.image = document.getElementById("dragonBall")
+            this.x = this.gameWidth - 600;                               //should start near middle-right position on  screen
+            this.y = this.gameHeight - this.gameHeight;           //should drop from top of screen
+            this.frameX = 0;
+            this.vy = 0;
+            this.weight = 1;                                //so it drops from top of screen   
+            this.markedForDeletion = false;
+        }
+        draw(context){                                                                           //draw method expects context as an argument 
+            context.strokeStyle = 'white'
+            context.strokeRect(this.x, this.y, this.width, this.height);
+            context.beginPath();
+            context.arc(this.x + this.width/2, this.y + this.height/2, this.width/2, 0, Math.PI * 2);
+            context.stroke();
+            context.drawImage(this.image, this.frameX * this.width, 0, this.width, this.height, this.x,     //passing it similar dimension as we did with player to situate our desired sprite in the frame
+            this.y, this.width, this.height); 
+        }
+        update(){
+            this.y += this.vy;                                                                  //adding velocity to players vertical coordinate
+            if (!this.onGround()){                                                              //if this.onGround is false, meaning player is in air, then...(see below line)
+                this.vy += this.weight;
+            } else {
+                this.vy = 0;
+            }
+            if (this.y > this.gameHeight - this.height) this.y = this.gameHeight + 100;  //this makes dragon ball fall directly through floor so that it doesnt buildup at bottom. Player much catch in air
+       
+       
+            this.y += this.vy;                                                                  //adding velocity to players vertical coordinate
+            if (!this.onGround()){                                                              //if this.onGround is false, meaning player is in air, then...(see below line)
+                this.vy += this.weight;
+            }                                     
+           
+
+        }
+    
+        onGround(){
+            return this.y >= this.gameHeight - this.height;                                     //utility method to check if powerup is in air or standing on ground. If statement evaluates to true, we know player is standing on solid ground
+        }
+    }
+
+    function handleDragonBalls(deltaTime) {                                                  //function is responsible for adding, animating, and removing enemies from the game
+        if (ballTimer > ballInterval + randomBallInterval){                           //if enemyTimer is greater than our enemyInterval plus our randomly generated randomEnemyInterval it will push a new Enemy into our enemies array. Basically we have a base enemy interval and a randomly generated interval that get added together, and when our timer reaches that sum it pushes a new Enemy into the array
+            dragonBalls.push(new Powerup(canvas.width, canvas.height));                        //taking empty enemies array we defined at the top and pushing into it an instance of Enemy class. We pass it canvas.width and canvas.height so it knows to operate within boundaries of our game
+            console.log(dragonBalls);
+            randomBallInterval = Math.random() * 10000 + 500;
+            ballTimer = 0;                                                              //then set enemyTimer back to 0 so we can start enemy generation process over again
+        }else {
+            ballTimer += deltaTime;                                                     //else just keep adding deltaTime to our enemyTimer until limit defined in enemyInterval is reached. Using deltaTime like this ensures our events are timed the same on slow and fast computers because faster computers will have lower deltaTime
+        }
+        dragonBalls.forEach(ball => {                                                      //we want to call our draw method and update method from within our Enemy class for EACH enemy object inside our enemies array
+            ball.draw(ctx);
+            ball.update(deltaTime);                                                    //pass deltaTime into enemy.update method
+        });
+        dragonBalls = dragonBalls.filter(ball => !ball.markedForDeletion)
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+   
+   
+   
+   
     class Enemy {                                                                //Enemy class will generate enemy object
         constructor(gameWidth, gameHeight){                                      //constructor expects gameWidth & gameHeight as arguments because enemies need to be aware of game area boundaries
             this.gameWidth = gameWidth;                                          //convert gameWidth & gameHeight(line below) to class properties
@@ -205,12 +293,22 @@ window.addEventListener('load', function start(){                         //wrap
     }
 
     function displayStatusText(context) {                                              //utility function that handles things like score and "gameover" message
-        context.fillStyle = "blue";
-        context.font = "40px helvetica";
-        context.fillText('Score: ' + score, 20, 50);
+       //score display
         context.fillStyle = "orange";
         context.font = "40px helvetica";
+        context.fillText('Score: ' + score, 20, 50);
+        context.fillStyle = "blue";
+        context.font = "40px helvetica";
         context.fillText('Score: ' + score, 20, 52);
+      //dragonBallCounter display
+        context.fillStyle = "blue";
+        context.font = "40px helvetica";
+        context.fillText('Dragon Balls: ' + dragonBallCounter, 20, 100);
+        context.fillStyle = "orange";
+        context.font = "40px helvetica";
+        context.fillText('Dragon Balls: ' + dragonBallCounter, 20, 102);
+
+
         
         if (gameOver){
             context.textAlign = "center";
@@ -261,6 +359,12 @@ window.addEventListener('load', function start(){                         //wrap
     let enemyInterval = 300;                                                   //helper variable to assist in timing periodically with deltaTime. Will be the time limit for enemyTimer(above)
     let randomEnemyInterval = Math.random() * 1000 + 500;                       //this created a random interval whihc we will add to our enemyInterval, thus creating random spawn times for our enemies
 
+   let ballTimer = 0;
+   let ballInterval = 1000;
+   let randomBallInterval = Math.random() * 1000 + 500;
+   
+   
+   
     function animate(timeStamp){                                               // will run 60 x per second updating and drawing our game over and over 
         const deltaTime = timeStamp - lastTime                                 //deltaTime is the difference in ms between timeStamp from current loop and timeStamp from previous loop. (timeStamp value is generated in our requestAnimationFrame(animate) method.)  The value of deltaTime tells us how many ms our computer needs to serve one animation frame
         lastTime = timeStamp;                                                  //then set lastTime to timeStamp so it can be used in the next loop as the value of timeStamp from the previous loop
@@ -268,8 +372,9 @@ window.addEventListener('load', function start(){                         //wrap
         background.draw(ctx);                                                  //since we are drawing everything on a single canvas element(ctx), we have to draw our background before player and enemies, so that they are visible on top of background
         background.update();                                                   //call background.update inside our animation loop so our background animation will scroll
         player.draw(ctx);                                                      // this displays player by calling our "draw" method we wrote above. It expects "context" as an argument, so we pass it our "ctx" from the top 
-        player.update(input, deltaTime, enemies);                                       // call our update method. Passing in input for key commands and deltaTime for animation
+        player.update(input, deltaTime, enemies, dragonBalls);                                       // call our update method. Passing in input for key commands and deltaTime for animation
         handleEnemies(deltaTime);                                              //call handle enemies function from inside animation loop, pass it deltaTime because we are using it to trigger periodic events(enemy generation)
+        handleDragonBalls(deltaTime);
         displayStatusText(ctx);
 
         if (!gameOver) requestAnimationFrame(animate);                         //built in method to make everything in our animate function loop. Pass in "animate", the name of its parent function, to make endless animation loop. Only runs if gameOver is false, meaning mario is still alive
