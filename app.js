@@ -1,5 +1,5 @@
 
-window.addEventListener('load', function(){                         //wrap whole game in this so JS waits for all assets like sprite sheets and images to load before it executes code
+window.addEventListener('load', function start(){                         //wrap whole game in this so JS waits for all assets like sprite sheets and images to load before it executes code
     const canvas = document.getElementById('canvas1');              //assign canvas a variable and grab it off our page
     const ctx = canvas.getContext('2d');                            //ctx = "context". instance of built-in canvas 2D api that holds all drawing methods and properties we will need to animate the game
     canvas.width = 1400;
@@ -7,6 +7,8 @@ window.addEventListener('load', function(){                         //wrap whole
     let enemies = [];                                               //since we want multiple enemies on screen at the same time, we will create an enemies variable and set it equal to an empty array, so that later we can pass enemies into array
     let score = 0;                                                  //score is tied to collision detection. Score++ everytime enemy is killed
     let gameOver = false;                                           //for when mario hits goomba while on ground(aka dies)
+    
+    
    
     class InputHandler {                                            //InputHandler class will apply eventListeners to keyboard events and hold array of all currently active keys
         constructor(){
@@ -203,9 +205,13 @@ window.addEventListener('load', function(){                         //wrap whole
     }
 
     function displayStatusText(context) {                                              //utility function that handles things like score and "gameover" message
-        context.fillStyle = "orange";
+        context.fillStyle = "blue";
         context.font = "40px helvetica";
         context.fillText('Score: ' + score, 20, 50);
+        context.fillStyle = "orange";
+        context.font = "40px helvetica";
+        context.fillText('Score: ' + score, 20, 52);
+        
         if (gameOver){
             context.textAlign = "center";
             context.fillStyle = "black";
@@ -220,18 +226,30 @@ window.addEventListener('load', function(){                         //wrap whole
             context.textAlign = "center";
             context.fillStyle = "blue";
             context.fillText(`Final Score: ${score}`, canvas.width/2 + 2, 402);
+            
+            context.textAlign = "center";
+            context.fillStyle = "#6F2DA8";
+            context.fillText('Game over. Click anywhere to play again!', canvas.width/2 + 2, 500);
+            context.textAlign = "center";
+            context.fillStyle = "#FF00FF";
+            context.fillText('Game over. Click anywhere to play again!', canvas.width/2 + 2, 503);
+            context.textAlign = "center";
+            context.fillStyle = "#C21807";
+            context.fillText('Game over. Click anywhere to play again!', canvas.width/2 + 2, 506);
+            context.textAlign = "center";
+            context.fillStyle = "#F9812A";
+            context.fillText('Game over. Click anywhere to play again!', canvas.width/2 + 2, 509);
+            context.textAlign = "center";
+            context.fillStyle = "#FFD300";
+            context.fillText('Game over. Click anywhere to play again!', canvas.width/2 + 2, 512);
         }
     }
-    // let restartButton = document.createElement("button");
-    // restartButton.innerHTML = "reset"
-    // restartButton.type = "reset"
-
-    // function restart (context) {
-    //     if (gameOver) {
-    //         context.restartButton
-    //     }
-    // }
-    // }
+    
+        canvas.onclick = function () {
+                if (gameOver === true)                                      //if gameOver is true, clicking anywhere on the canvas will run start() aka restarting the game
+                start();
+        };
+ 
         
     const input = new InputHandler();                                           //instance of InputHandler class that will run all code inside constructor, so at this point the eventListener "keydown" is applied
     const player = new Player(canvas.width, canvas.height);                     //instance of Player class. Our constuctor expects a gameWidth and gameHeight as arguments, so we will pass it the canvas.width and canvas.height we specified at the top. This keeps our player inside our canvas boundaries
