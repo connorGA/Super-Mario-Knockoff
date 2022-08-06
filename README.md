@@ -187,10 +187,10 @@ body {
 
 
 # JavaScript
-```
-JavaScript Code Block
-```
 
+JavaScript Code Block
+
+```
 window.addEventListener('load', function start(){                   //waits for assets to load  before running code
     const canvas = document.getElementById('canvas1');              
     const ctx = canvas.getContext('2d');                            
