@@ -112,6 +112,7 @@ HTML Handling Canvas
 ```
 CSS styleSheet for Home Page
 ```
+```
 body {
     
     text-align: center;
@@ -161,7 +162,9 @@ h3 {
     margin-top: 80px;
 }
 ```
+```
 CSS styleSheet for Canvas
+```
 ```
 body {
     background: black;
