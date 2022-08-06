@@ -160,10 +160,6 @@ h3 {
     font-size: 30px;
     margin-top: 80px;
 }
-
-
-```
-
 ```
 CSS styleSheet for Canvas
 ```
@@ -188,7 +184,6 @@ body {
 
 
 # JavaScript
-```
 ```
 JavaScript Code Block
 ```
