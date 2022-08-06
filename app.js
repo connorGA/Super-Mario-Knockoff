@@ -1,57 +1,56 @@
 
-window.addEventListener('load', function start(){                         //wrap whole game in this so JS waits for all assets like sprite sheets and images to load before it executes code
-    const canvas = document.getElementById('canvas1');              //assign canvas a variable and grab it off our page
-    const ctx = canvas.getContext('2d');                            //ctx = "context". instance of built-in canvas 2D api that holds all drawing methods and properties we will need to animate the game
+window.addEventListener('load', function start(){                   //waits for assets to load  before running code
+    const canvas = document.getElementById('canvas1');              
+    const ctx = canvas.getContext('2d');                            
     canvas.width = 1400;
-    canvas.height = 720;                                            //canvas.width and canvas.height are adjusting the canvas box to the desired size
-    let enemies = [];                                               //since we want multiple enemies on screen at the same time, we will create an enemies variable and set it equal to an empty array, so that later we can pass enemies into array
-    let score = 0;                                                  //score is tied to collision detection. Score++ everytime enemy is killed
+    canvas.height = 720;                                            
+    let enemies = [];                                                
+    let score = 0;                                                  
     let dragonBallCounter = 0;
-    let gameOver = false;                                           //for when mario hits goomba while on ground(aka dies)
+    let gameOver = false;                                           
     let dragonBalls = [];
     
    
     class InputHandler {                                            //InputHandler class will apply eventListeners to keyboard events and hold array of all currently active keys
         constructor(){
-            this.keys = [];                                         //this.keys property is set equal to empty array. Keys will be added and removed from array as they are pressed and released to keep track of multiple key presses
-            window.addEventListener('keydown', e => {               //place eventListener directly in constructor. This way when we create an instance of inputHandler class later, all eventlisteners will be automatically applied.
-                // console.log(e.key);                              //call back function on eventListener has access to this built in(keydown) event object; (e) = assigned variable name for event
+            this.keys = [];                                         
+            window.addEventListener('keydown', e => {               
+                // console.log(e.key);                              
                 if ((   e.key === 'ArrowDown' ||                    
                         e.key === 'ArrowUp' ||
-                        e.key === 'ArrowLeft' ||                    //these four checking to see if e.key input is one of our four specified directions
+                        e.key === 'ArrowLeft' ||                    
                         e.key === 'ArrowRight')
                 
-                    && this.keys.indexOf(e.key) === -1){            //this says if one of the above inputs is applied AND this input is not yet in our this.keys array, then push it into the array
-                    this.keys.push(e.key);                          //if above e.key value is equal to one of our directions(Down,Up,Left,Right), this will push the value into our this.keys array
+                    && this.keys.indexOf(e.key) === -1){            
+                    this.keys.push(e.key);                          
                 }
             });
 
-            window.addEventListener('keyup', e => {                 //"keyup" event is used to deal with the event that keys are released
+            window.addEventListener('keyup', e => {                 
                 // console.log(e.key);
                 if (    e.key === 'ArrowDown' || 
                         e.key === 'ArrowUp' ||
                         e.key === 'ArrowLeft' ||
                         e.key === 'ArrowRight'){
-                    this.keys.splice(this.keys.indexOf(e.key), 1); // this says that if key that was released was one of four above e.key inputs, find index of that key inside our this.keys array and use splice to remove (1) element from that array, hence the 1 at the end of parentheses
-                }
-                                                                    // both of our "keydown" & "keyup" eventlisteners work together to add and remove key inputs from our this.keys array as they are pressed and released
+                    this.keys.splice(this.keys.indexOf(e.key), 1); 
+                }                                                    
             });
         }
     }
 
     class Player {                                                  //Player class will define properties of player object. It will draw it, animate it, and update its position based on user input
-        constructor(gameWidth, gameHeight){                         //player object needs to be aware of game boundaries so pass in gameWidth and gameHeight as arguments
-            this.gameWidth = gameWidth;                             //then game.Width & game.Height converted to class properties
+        constructor(gameWidth, gameHeight){                         
+            this.gameWidth = gameWidth;                             
             this.gameHeight = gameHeight;
-            this.width = 170;                                       //this.width & this.height dictate the size of the frame that holds our player sprite
+            this.width = 170;                                       
             this.height = 300;
-            this.x = 0;                                             // this.x cord moves player on horizontal axis and this.y moves player on vertical axis. Setting to 0 starts player on furthest left edge
-            this.y = this.gameHeight - this.height;                 //this makes sure our player stands at the bottom of our specified game area
-            this.image = document.getElementById('playerImage');    // grabbing our player sprite sheet and bringing it into the project
+            this.x = 0;                                             
+            this.y = this.gameHeight - this.height;                 
+            this.image = document.getElementById('playerImage');    
             this.frameX = 0;
-            this.frameY = 0;                                        //changing this.frameX & this.frameY allows us to navigate to different frames in our sprite sheet
+            this.frameY = 0;                                        
             this.maxFrame = 1.2;
-            this.fps = 20;                                          //to time frame rate with delta time we will need 3 helper properties. (1)fps will effect how fast we swap between individual animation frames in our sprite sheet
+            this.fps = 20;                                          
             this.frameTimer = 0;                                    //(2)will count from 0 to frameInterval over and over 
             this.frameInterval = 1000/this.fps;                     //(3)will define the value we are counting towards, its the value of how many ms each frame lasts
             this.speed = 0;                                         //affects player movement on x axis(horizontal); higher value = higher speed. Negative values move character backwards
