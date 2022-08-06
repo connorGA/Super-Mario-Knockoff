@@ -83,6 +83,14 @@ window.addEventListener('load', function start(){                         //wrap
                 } else if(distance < enemy.width/2 + this.width/2 && this.vy === 0){
                     gameOver = true;
                 }
+                //superSaiyan invincibility 
+                 if (dragonBallCounter > 1 && dragonBallCounter % 7 === 0 && distance < enemy.width/2 + this.width/2){
+                    enemy.markedForDeletion = true;
+                    gameOver = false;
+                    score++;
+                    
+                   
+                }
             });
             //
             dragonBalls.forEach(ball => {                                                            //need to run for every enemy in enemies array so passed enemies above as argument and ran forEach
@@ -132,11 +140,46 @@ window.addEventListener('load', function start(){                         //wrap
                 // this.frameX = 0.2;                                                           //took out this line because it bypasses our sprite animation above and makes Mario just stand still when on ground
             }
             if (this.y > this.gameHeight - this.height) this.y = this.gameHeight - this.height  //was having issue of player falling through floor, so this creates a vertical boundary to prevent that
+       
+       
+            //superSaiyan movement
+            if (dragonBallCounter > 1 && dragonBallCounter % 7 === 0) {
+                
+                if (input.keys.indexOf('ArrowRight') > -1) {                                          //setting input.keys to > -1 basically makes sure that the input exists in our this.keys array
+                    this.speed = 20;
+                } else if (input.keys.indexOf('ArrowLeft') > -1) {
+                    this.speed = -20;
+                } else if (input.keys.indexOf('ArrowUp') > -1 && this.onGround()) {                   // adding "&& this.onGround" prevents player from double jumping. Can now only jump if standing on ground. Keep in mind, velocity begins negative as it initially goes up, reducing from our set -32 until it reaches 0 at the peak, and then as it falls that value continues to count from zero up into positive integers. When we hit floor, line 80 sets vy back to 0
+                    this.vy -= 30;
+                } else {
+                    this.speed = 0;                                                                  //setting this.speed back to zero after all of these inputs tells player to stop moving once key inputs are no longer pressed, rather than having player continually moving in a direciton forever
+                }
+                // horizontal movement 
+                this.x += this.speed;                                                                  //we are adding this.speed to this.x at all times to control horizontal movement. When this.speed is positive, player will move right. When this.speed is negative, player will move left. > number = higher speed
+                if (this.x < 0) this.x = 0;                                                         //creating horizontal boundaries, this line doesnt allow player to move past left boundary
+                else if (this.x > this.gameWidth - this.width) this.x = this.gameWidth - this.width //line says if players horizontal coordinate is more than gameWidth minus players width(meaning right edge of player rectangle) is touching right edge of canvas area, dont allow it to move past this point
+                //vertical movement
+                this.y += this.vy;                                                                  //adding velocity to players vertical coordinate
+                if (!this.onGround()){                                                              //if this.onGround is false, meaning player is in air, then...(see below line)
+                    this.vy += this.weight;                                                         //will take velocity and start gradually adding weight as long as player is in air, thus reducing velocity and bringing back down
+                    this.frameY = 0;
+                    this.frameX = 2.2;                                                            //this.frameY and this.frameX allow me to switch to different frame in my sprite sheet when player is in air(added jumping mario frame)
+                } else {
+                    this.vy = 0;                                                                    //if player is not in air, and is back on ground, reset our velocity to 0
+                    // this.frameY = 0;
+                    // this.frameX = 0.2;                                                           //took out this line because it bypasses our sprite animation above and makes Mario just stand still when on ground
+                }
+                if (this.y > this.gameHeight - this.height) this.y = this.gameHeight - this.height  //was having issue of player falling through floor, so this creates a vertical boundary to prevent that
+           
+
+            }
         }
         onGround(){
             return this.y >= this.gameHeight - this.height;                                     //utility method to check if player is in air or standing on ground. If statement evaluates to true, we know player is standing on solid ground
         }
     }
+
+
 
     class Background {                                                                                          //Background class will handle endleslly scrolling background. Using a single endleslly scrolling layer 
         constructor(gameWidth, gameHeight) {                                                                    //constructor expects gameWidth and gameHeight as arguments
@@ -167,10 +210,10 @@ window.addEventListener('load', function start(){                         //wrap
             this.gameHeight = gameHeight;
             this.width = 60;
             this.height = 60;
-            this.image = document.getElementById("dragonBall")
+            // this.image = document.getElementById("dragonBall")
             this.x = this.gameWidth - 600;                               //should start near middle-right position on  screen
             this.y = this.gameHeight - this.gameHeight;           //should drop from top of screen
-            this.frameX = 0;
+            this.frameX = 1;
             this.vy = 0;
             this.weight = 1;                                //so it drops from top of screen   
             this.markedForDeletion = false;
@@ -181,8 +224,10 @@ window.addEventListener('load', function start(){                         //wrap
             context.beginPath();
             context.arc(this.x + this.width/2, this.y + this.height/2, this.width/2, 0, Math.PI * 2);
             context.stroke();
-            context.drawImage(this.image, this.frameX * this.width, 0, this.width, this.height, this.x,     //passing it similar dimension as we did with player to situate our desired sprite in the frame
-            this.y, this.width, this.height); 
+            context.fillStyle = "orange"
+            context.fillRect(this.x, this.y, this.width, this.height);
+            // context.drawImage(this.image, this.frameX * this.width, 1, this.width, this.height, this.x,     //passing it similar dimension as we did with player to situate our desired sprite in the frame
+            // this.y, this.width, this.height); 
         }
         update(){
             this.y += this.vy;                                                                  //adding velocity to players vertical coordinate
