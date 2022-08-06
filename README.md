@@ -74,8 +74,120 @@ HTML Corresponding to Home Screen
 
 ```
 
+```
+```
+HTML Handling Canvas
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <title>Super Mario Saiyans</title>
+    <link rel="stylesheet" href="canvasStyle.css">
+</head>
+<body>
+    
+    <div class = "game">
+        <canvas id="canvas1"></canvas>
+        <img src="./mario sprites.png" id = "playerImage" alt="player-sprites" style="display: none">
+        <img src="./3 Goomba sprite sheet (2).png" id = "enemyImage" alt="enemy-sprites" style="display: none">
+        <img src="./Screen Shot 2022-07-24 at 1.59.05 PM.png" id = "backgroundImage" alt="level" style="display: none">
+        <img src="./super-saiyans.png" id = "super-saiyans" alt = "power-up-player-sprite" style="display: none">
+        <img src="./dragon ball png.png" id ="dragonBall" alt = "power-up-sprite" style="display: none;">
+        
+    </div>
+    <script src="app.js">
+
+
+    </script>
+</body>
+</html>
+
+```
+
 # CSS
-code snippet
+```
+```
+CSS styleSheet for Home Page
+```
+body {
+    
+    text-align: center;
+    background-image: url(./Super_Mario_Clouds.gif);
+    background-size: cover;
+}
+
+h1 {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 70px;
+}
+     
+#blue {
+    color: rgb(26, 175, 229);
+}
+
+#yellow {
+    color: rgb(255, 208, 0);
+}
+
+#red {
+    color: rgb(207, 19, 19);
+}
+
+#green {
+    color: rgb(19, 167, 19);
+}
+
+#saiyan {
+    color: rgb(243, 115, 10);
+}
+
+h3 {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 40px;
+    color: rgb(100, 47, 47);
+}
+
+.text {
+    font-size: 25px;
+    color: rgb(8, 10, 24);
+
+}
+
+.link {
+    font-size: 30px;
+    margin-top: 80px;
+}
+
+
+```
+
+```
+```
+CSS styleSheet for Canvas
+```
+body {
+    background: black;
+}
+
+   
+   
+#canvas1 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 5px solid white;
+}
+
+#playerImage, #backgroundImage, #enemyImage {     
+    display: none;                                 
+}
+```
+
 
 # JavaScript
 code snippet
