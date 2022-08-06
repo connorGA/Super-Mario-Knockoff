@@ -60,7 +60,7 @@ window.addEventListener('load', function start(){                         //wrap
 
         }
         draw(context){                                                                            //takes context as an argument to specify which canvas we want to draw on
-            context.strokeStyle = 'white'
+            context.strokeStyle = 'transparent'
             context.strokeRect(this.x, this.y, this.width, this.height);
             context.beginPath();
             context.arc(this.x + this.width/2, this.y + this.height/2, this.width/2, 0, Math.PI * 2);  //this line as well as lines above and below created circular hitboxes within our rectangular hitboxes
@@ -219,7 +219,7 @@ window.addEventListener('load', function start(){                         //wrap
             this.markedForDeletion = false;
         }
         draw(context){                                                                           //draw method expects context as an argument 
-            context.strokeStyle = 'white'
+            context.strokeStyle = 'transparent'
             context.strokeRect(this.x, this.y, this.width, this.height);
             context.beginPath();
             context.arc(this.x + this.width/2, this.y + this.height/2, this.width/2, 0, Math.PI * 2);
@@ -298,7 +298,7 @@ window.addEventListener('load', function start(){                         //wrap
             this.markedForDeletion = false;
         }
         draw(context){                                                                           //draw method expects context as an argument 
-            context.strokeStyle = 'white'
+            context.strokeStyle = 'transparent'
             context.strokeRect(this.x, this.y, this.width, this.height);
             context.beginPath();
             context.arc(this.x + this.width/2, this.y + this.height/2, this.width/2, 0, Math.PI * 2);
@@ -335,11 +335,12 @@ window.addEventListener('load', function start(){                         //wrap
             enemy.update(deltaTime);                                                    //pass deltaTime into enemy.update method
         });
         enemies = enemies.filter(enemy => !enemy.markedForDeletion)
-    }
+    };
 
     function displayStatusText(context) {                                              //utility function that handles things like score and "gameover" message
        //score display
         context.fillStyle = "orange";
+        context.textAlign = "left";
         context.font = "40px helvetica";
         context.fillText('Score: ' + score, 20, 50);
         context.fillStyle = "blue";
@@ -353,8 +354,21 @@ window.addEventListener('load', function start(){                         //wrap
         context.font = "40px helvetica";
         context.fillText('Dragon Balls: ' + dragonBallCounter, 20, 102);
 
-
-        
+        //superSaiyan mode display
+        if (dragonBallCounter > 1 && dragonBallCounter % 7 === 0){
+            context.textAlign = "center";
+            context.fillStyle = "black";
+            context.fillText("POWER LEVEL OVER 9000!", canvas.width/2 + 2, 250);
+            context.textAlign = "center";
+            context.fillStyle = "black";
+            context.fillText("POWER LEVEL OVER 9000!", canvas.width/2 + 2, 252);
+            context.textAlign = "center";
+            context.fillStyle = "black";
+            context.fillText("POWER LEVEL OVER 9000!", canvas.width/2 + 2, 254);
+            context.textAlign = "center";
+            context.fillStyle = "yellow";
+            context.fillText("POWER LEVEL OVER 9000!", canvas.width/2 + 2, 256);
+        };
         if (gameOver){
             context.textAlign = "center";
             context.fillStyle = "black";
