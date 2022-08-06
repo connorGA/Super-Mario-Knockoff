@@ -9,7 +9,7 @@ In order to kill enemy Goombas, jump and land directly on their heads.<br>
 In order for Mario to go Super Saiyan, collect all 7 Dragon Balls. Keep in mind, once Mario is holding 7 Dragon Balls, catching another will restart the count.
 
 # Instillation Instructions
-In order to play, click the link below:
+In order to play, click the link below:<br>
 Play Game - https://connorga.github.io/Super-Mario-Knockoff/
 
 # Wireframe 
