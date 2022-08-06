@@ -109,9 +109,9 @@ HTML Handling Canvas
 ```
 
 # CSS
-```
+
 CSS styleSheet for Home Page
-```
+
 ```
 body {
     
@@ -162,9 +162,9 @@ h3 {
     margin-top: 80px;
 }
 ```
-```
+
 CSS styleSheet for Canvas
-```
+
 ```
 body {
     background: black;
