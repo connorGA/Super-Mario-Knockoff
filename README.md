@@ -27,8 +27,7 @@ Play Game - https://connorga.github.io/Super-Mario-Knockoff/
 3. JavaScript
 
 # HTML
-```
-```
+
 HTML Corresponding to Home Screen
 ```
 <!DOCTYPE html>
@@ -72,9 +71,6 @@ HTML Corresponding to Home Screen
 </body>
 </html>
 
-```
-
-```
 ```
 HTML Handling Canvas
 ```
