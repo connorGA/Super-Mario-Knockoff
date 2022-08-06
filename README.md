@@ -13,7 +13,7 @@ In order to play, click the link below:
 Play Game - https://connorga.github.io/Super-Mario-Knockoff/
 
 # Wireframe 
-[Mario-Knockoff.drawio.pdf](https://github.com/connorGA/Super-Mario-Knockoff/files/9275372/Mario-Knockoff.drawio.pdf)
+![](https://github.com/connorGA/Super-Mario-Knockoff/files/9275372/Mario-Knockoff.drawio.pdf)
 
 
 
