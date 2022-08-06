@@ -10,7 +10,7 @@ In order for Mario to go Super Saiyan, collect all 7 Dragon Balls. Keep in mind,
 
 # Instillation Instructions
 In order to play, click the link below:<br>
-Play Game - https://connorga.github.io/Super-Mario-Knockoff/
+https://connorga.github.io/Super-Mario-Knockoff/
 
 # Wireframe 
 ![](./images/Mario-Knockoff-Page-1%20(2).jpg)
