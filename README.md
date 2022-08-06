@@ -4,6 +4,7 @@ A classic 2D sidescroller with a twist. Navigate Mario through an oncoming strea
 # Wireframe 
 [Mario-Knockoff.drawio.pdf](https://github.com/connorGA/Super-Mario-Knockoff/files/9275372/Mario-Knockoff.drawio.pdf)
 
+
 # Instillation Instructions
 In order to play, click the link below:
 Play Game - https://connorga.github.io/Super-Mario-Knockoff/
@@ -14,6 +15,11 @@ Left and right arrow keys will move Mario horizontally.
 Up arrow key allows Mario to jump.
 In order to kill enemy Goombas, jump and land directly on their head.
 In order for Mario to go Super Saiyan, collect all 7 Dragon Balls. Keep in mind, once Mario is holding 7 Dragon Balls, catching another will restart the count.
+
+# Technologies
+1. HTML5
+2. CSS
+3. JavaScript
 
 # HTML
 code snippet
