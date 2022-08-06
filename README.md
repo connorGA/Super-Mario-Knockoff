@@ -5,7 +5,7 @@ A classic 2D sidescroller with a twist. Navigate Mario through an oncoming strea
 Navigate Mario through the game using the left, right, and up arrow keys.<br> 
 Left and right arrow keys will move Mario horizontally.<br>
 Up arrow key allows Mario to jump.<br>
-In order to kill enemy Goombas, jump and land directly on their head.<br>
+In order to kill enemy Goombas, jump and land directly on their heads.<br>
 In order for Mario to go Super Saiyan, collect all 7 Dragon Balls. Keep in mind, once Mario is holding 7 Dragon Balls, catching another will restart the count.
 
 # Instillation Instructions
