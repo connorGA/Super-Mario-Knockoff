@@ -42,8 +42,76 @@ h3 {
 
 }
 
-.link {
-    font-size: 30px;
-    margin-top: 80px;
-}
 
+.btn1 {
+    background: linear-gradient(0deg, rgba(255,151,0,1) 0%, rgba(251,75,2,1) 100%);
+      line-height: 42px;
+      padding: 0;
+      border-radius: 50%;
+    
+    
+      margin: auto;
+      display: block;
+      width: 150px;
+      height: 100%;
+    }
+    .btn1:before,
+    .btn1:after {
+      position: absolute;
+      content: "";
+      right: 0;
+      bottom: 0;
+      background: rgba(251,75,2,1);
+      box-shadow:
+       -7px -7px 20px 0px rgba(255,255,255,.9),
+       -4px -4px 5px 0px rgba(255,255,255,.9),
+       7px 7px 20px 0px rgba(0,0,0,.2),
+       4px 4px 5px 0px rgba(0,0,0,.3);
+      transition: all 0.3s ease;
+    }
+    .btn1:before{
+       height: 0%;
+       width: 2px;
+    }
+    .btn1:after {
+      width: 0%;
+      height: 2px;
+    }
+    .btn1:hover{
+      color: rgba(251,75,2,1);
+      background: rgba(255,151,0,1);
+    }
+    .btn1:hover:before {
+      height: 100%;
+    }
+    .btn1:hover:after {
+      width: 100%;
+    }
+    .btn1:before,
+    .btn1:after {
+      position: absolute;
+      content: "";
+      left: 0;
+      top: 0;
+      background: rgba(251,75,2,1);
+      box-shadow:
+       -7px -7px 20px 0px rgba(255,255,255,.9),
+       -4px -4px 5px 0px rgba(255,255,255,.9),
+       7px 7px 20px 0px rgba(0,0,0,.2),
+       4px 4px 5px 0px rgba(0,0,0,.3);
+      transition: all 0.3s ease;
+    }
+    .btn1:before {
+      width: 2px;
+      height: 0%;
+    }
+    .btn1:after {
+      height: 2px;
+      width: 0%;
+    }
+    .btn1:hover:before {
+      height: 100%;
+    }
+    .btn1:hover:after {
+      width: 100%;
+    }

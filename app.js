@@ -166,14 +166,13 @@ window.addEventListener('load', function start(){                   //waits for 
                     // this.frameX = 0.2;                                                           
                 }
                 if (this.y > this.gameHeight - this.height) this.y = this.gameHeight - this.height  
-           
 
             }
         }
         onGround(){
             return this.y >= this.gameHeight - this.height;                                     
         }
-    }
+    };
 
 
 
@@ -356,20 +355,21 @@ window.addEventListener('load', function start(){                   //waits for 
             context.fillText("POWER LEVEL OVER 9000!", canvas.width/2 + 2, 256);
         };
         if (gameOver){
+            //displays GAME OVER! message
             context.textAlign = "center";
             context.fillStyle = "black";
-            context.fillText("GAME OVER!", canvas.width/2 + 2, 300);            //displays GAME OVER message
+            context.fillText("GAME OVER!", canvas.width/2 + 2, 300);           
             context.textAlign = "center";
             context.fillStyle = "red";
             context.fillText("GAME OVER!", canvas.width/2 + 2, 302);           
-            
+            //displays Final Score message
             context.textAlign = "center";
             context.fillStyle = "orange";
             context.fillText(`Final Score: ${score}`, canvas.width/2 + 2, 400);
             context.textAlign = "center";
             context.fillStyle = "blue";
             context.fillText(`Final Score: ${score}`, canvas.width/2 + 2, 402);
-            
+            //displays "Game over. Click anywhere to play again!"
             context.textAlign = "center";
             context.fillStyle = "#6F2DA8";
             context.fillText('Game over. Click anywhere to play again!', canvas.width/2 + 2, 500);
@@ -394,6 +394,13 @@ window.addEventListener('load', function start(){                   //waits for 
         };
  
         
+    // function dragonBallReset(){
+    //     if (dragonBallCounter > 1 && dragonBallCounter % 7 === 0 && //timer = 20) {                             ///////////////////////////////////////////////////////////////////////////////
+    //         dragonBallCounter = 0;
+    //     }
+    // }
+
+    
     const input = new InputHandler();                                           //calling instance of these classes to run everything in constructors
     const player = new Player(canvas.width, canvas.height);                     
     const background = new Background(canvas.width, canvas.height);             
