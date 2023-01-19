@@ -6,9 +6,11 @@ window.addEventListener('load', function start(){                   //waits for 
     canvas.height = 720;                                            
     let enemies = [];                                                
     let score = 0;                                                  
-    let dragonBallCounter = 0;
+    let dragonBallCounter = 6;
     let gameOver = false;                                           
     let dragonBalls = [];
+
+
     
    
     class InputHandler {                                            //InputHandler class will apply eventListeners to keyboard events and hold array of all currently active keys
@@ -139,8 +141,11 @@ window.addEventListener('load', function start(){                   //waits for 
        
        
             //superSaiyan movement
+        
+            let timeoutSet = false;
+            
             if (dragonBallCounter > 1 && dragonBallCounter % 7 === 0) {
-                
+
                 if (input.keys.indexOf('ArrowRight') > -1) {                                          
                     this.speed = 20;
                 } else if (input.keys.indexOf('ArrowLeft') > -1) {
@@ -165,9 +170,16 @@ window.addEventListener('load', function start(){                   //waits for 
                     // this.frameY = 0;
                     // this.frameX = 0.2;                                                           
                 }
-                if (this.y > this.gameHeight - this.height) this.y = this.gameHeight - this.height  
+                if (!timeoutSet){
+                    setTimeout(() => {
+                        dragonBallCounter = 0;
+                    }, 10000); // 10000ms = 10 sec
+                    timeoutSet = true;
+                }
+                
 
-            }
+                if (this.y > this.gameHeight - this.height) this.y = this.gameHeight - this.height  
+            } 
         }
         onGround(){
             return this.y >= this.gameHeight - this.height;                                     
