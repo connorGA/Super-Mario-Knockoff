@@ -6,7 +6,7 @@ window.addEventListener('load', function start(){                   //waits for 
     canvas.height = 720;                                            
     let enemies = [];                                                
     let score = 0;                                                  
-    let dragonBallCounter = 6;
+    let dragonBallCounter = 0;
     let gameOver = false;                                           
     let dragonBalls = [];
 
