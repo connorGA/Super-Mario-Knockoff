@@ -218,7 +218,7 @@ window.addEventListener('load', function start(){                   //waits for 
             this.width = 60;
             this.height = 60;
             // this.image = document.getElementById("dragonBall")
-            this.x = this.gameWidth - 600;                               
+            this.x = Math.random() * this.gameWidth;                               
             this.y = this.gameHeight - this.gameHeight;           
             this.frameX = 1;
             this.vy = 0;
@@ -239,14 +239,14 @@ window.addEventListener('load', function start(){                   //waits for 
         update(){
             this.y += this.vy;                                                                  
             if (!this.onGround()){                                                              
-                this.vy += this.weight;
+                this.vy += 0.01 * this.weight;
             } else {
                 this.vy = 0;
             }
             if (this.y > this.gameHeight - this.height) this.y = this.gameHeight + 100;  
        
        
-            this.y += this.vy;                                                                  
+            this.y += 0.01 * this.vy;                                                                  
             if (!this.onGround()){                                                              
                 this.vy += this.weight;
             }                                     
@@ -255,7 +255,7 @@ window.addEventListener('load', function start(){                   //waits for 
         }
     
         onGround(){
-            return this.y >= this.gameHeight - this.height;                                     
+            return this.y >= this.gameHeight - this.height - 52;                                     
         }
     }
 
