@@ -161,7 +161,7 @@ window.addEventListener('load', function start(){                   //waits for 
                 else if (this.x > this.gameWidth - this.width) this.x = this.gameWidth - this.width 
                 //vertical movement
                 this.y += this.vy;                                                                  
-                if (!this.onGround()){                                                              
+                if (!this.onGround() ){                                                              
                     this.vy += this.weight;                                                         
                     this.frameY = 0;
                     this.frameX = 2.2;                                                            
@@ -230,23 +230,22 @@ window.addEventListener('load', function start(){                   //waits for 
             context.strokeRect(this.x, this.y, this.width, this.height);
             context.beginPath();
             context.arc(this.x + this.width/2, this.y + this.height/2, this.width/2, 0, Math.PI * 2);
-            context.stroke();
             context.fillStyle = "orange"
-            context.fillRect(this.x, this.y, this.width, this.height);
+            context.fill();
             // context.drawImage(this.image, this.frameX * this.width, 1, this.width, this.height, this.x,     
             // this.y, this.width, this.height); 
         }
         update(){
             this.y += this.vy;                                                                  
             if (!this.onGround()){                                                              
-                this.vy += 0.01 * this.weight;
+                this.vy += 0.0001 * this.weight;
             } else {
                 this.vy = 0;
             }
             if (this.y > this.gameHeight - this.height) this.y = this.gameHeight + 100;  
        
        
-            this.y += 0.01 * this.vy;                                                                  
+            this.y += 0.0001 * this.vy;                                                                  
             if (!this.onGround()){                                                              
                 this.vy += this.weight;
             }                                     
