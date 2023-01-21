@@ -98,7 +98,10 @@ window.addEventListener('load', function start(){                   //waits for 
                 const dx2 = ball.x - this.x;                                                      
                 const dy2 = ball.y - this.y;                                                      
                 const distance2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);                                   
-                if (distance2 < ball.width/2 + this.width/2) {                    
+                if (this.x < ball.x + ball.width &&
+                    this.x + this.width > ball.x &&
+                    this.y < ball.y + ball.height &&
+                    this.y + this.height > ball.y) {                    
                     ball.markedForDeletion = true;                        
                     dragonBallCounter++;  
                 } 
