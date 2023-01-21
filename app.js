@@ -262,7 +262,7 @@ window.addEventListener('load', function start(){                   //waits for 
     }
 
     function handleDragonBalls(deltaTime) {                                                  //function is responsible for adding, animating, and removing power ups from the game
-        if (ballTimer > ballInterval + randomBallInterval){                           
+        if (ballTimer > ballInterval + randomBallInterval && !(dragonBallCounter > 1 && dragonBallCounter % 7 === 0)){                           
             dragonBalls.push(new Powerup(canvas.width, canvas.height));                        
             console.log(dragonBalls);
             randomBallInterval = Math.random() * 10000 + 500;
