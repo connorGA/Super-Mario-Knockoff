@@ -621,6 +621,6 @@ window.addEventListener('load', function start(){                   //waits for 
 ```
 
 # Unsolved Problems for Future Development
-I have a sprite sheet created that displays the player sprite(Mario) with blonde Super Saiyan hair. Sizing the sprite was an issue, so for now it was left off. I plan to get it inserted properly so that when player collects 7 Dragon Balls, the player sprite becomes the Super Saiyan itteration of Mario.
+1. Currently, there is a slight bug after the player transitions out of Super Saiyan mode. For a few seconds, the dragonball counter stays at 0 even if more are collected. It fixes itself after the slight delay, but I would like it to be more seemless. Likely a bug caused by the timeOut function that ends Super Saiyan mode. 
 
-I would also like to add some updates to the power ups. Including a timer on the Super Siayan mode and adding some randomeness to where the Dragon Balls drop would make the game more challenging.
+2. Adding projectiles(like fireballs) that the player can shoot after collecting powerups would be a fun addition.
