@@ -41,7 +41,8 @@ window.addEventListener('load', function start(){                   //waits for 
     }
 
     class Player {                                                  //Player class will define properties of player object. It will draw it, animate it, and update its position based on user input
-        constructor(gameWidth, gameHeight){                         
+        constructor(gameWidth, gameHeight){  
+                                   
             this.gameWidth = gameWidth;                             
             this.gameHeight = gameHeight;
             this.width = 169.5;                                       
@@ -148,6 +149,7 @@ window.addEventListener('load', function start(){                   //waits for 
             let timeoutSet = false;
             
             if (dragonBallCounter > 1 && dragonBallCounter % 7 === 0) {
+
                  this.image = document.getElementById('super-saiyans'); 
 
                 if (input.keys.indexOf('ArrowRight') > -1) {                                          
@@ -177,6 +179,7 @@ window.addEventListener('load', function start(){                   //waits for 
                 if (!timeoutSet){
                     setTimeout(() => {
                         dragonBallCounter = 0;
+                        this.image = document.getElementById('playerImage');
                     }, 10000); // 10000ms = 10 sec
                     timeoutSet = true;
                 }
