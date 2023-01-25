@@ -44,7 +44,7 @@ window.addEventListener('load', function start(){                   //waits for 
         constructor(gameWidth, gameHeight){                         
             this.gameWidth = gameWidth;                             
             this.gameHeight = gameHeight;
-            this.width = 170;                                       
+            this.width = 169.5;                                       
             this.height = 300;
             this.x = 0;                                             
             this.y = this.gameHeight - this.height;                 
@@ -148,6 +148,7 @@ window.addEventListener('load', function start(){                   //waits for 
             let timeoutSet = false;
             
             if (dragonBallCounter > 1 && dragonBallCounter % 7 === 0) {
+                 this.image = document.getElementById('super-saiyans'); 
 
                 if (input.keys.indexOf('ArrowRight') > -1) {                                          
                     this.speed = 20;
